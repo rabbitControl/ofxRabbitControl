@@ -79,9 +79,6 @@ namespace rcp {
 
         if (!isValid(*parameter)) return;
 
-        parameter->dispose();
-        params.erase(parameter->getId());
-
         // erase from available ids
         auto id_it = std::find(ids.begin(), ids.end(), parameter->getId());
         if (id_it != ids.end()) {
@@ -89,6 +86,12 @@ namespace rcp {
         } else {
             std::cerr << "could not find id in id list\n";
         }
+
+        if (auto p = parameter->getParent().lock()) {
+            p->removeChild(parameter);
+        }
+        parameter->dispose();
+        params.erase(parameter->getId());
 
         // check if this is a group... if so, remove all children without!! adding them to the removed-list
         if (parameter->getTypeDefinition().getDatatype() == DATATYPE_GROUP) {
