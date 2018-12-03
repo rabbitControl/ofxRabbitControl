@@ -36,8 +36,8 @@
 
 #include "ofLog.h"
 
-#include "websockettransporter.h"
-#include "ofxrabbitcontrol.h"
+#include "websocketTransporter.h"
+#include "ofxRabbitControl.h"
 
 #include "rabbitControl/option.h"
 #include "rabbitControl/packet.h"
@@ -47,7 +47,7 @@ void websocketServerTransporter::onConnect( ofxLibwebsockets::Event& args ) {
 }
 
 void websocketServerTransporter::onOpen( ofxLibwebsockets::Event& args ) {
-    ofLogNotice() <<"client connected: "<< args.conn.getClientIP();
+    ofLogNotice() << "client connected: "<< args.conn.getClientIP();
 }
 
 void websocketServerTransporter::onClose( ofxLibwebsockets::Event& args ) {
@@ -70,8 +70,6 @@ void websocketServerTransporter::onMessage( ofxLibwebsockets::Event& args ) {
     } else {
         ofLogNotice() << "got message " << args.message;
     }
-
-    std::flush(std::cout);
 }
 
 void websocketServerTransporter::onBroadcast( ofxLibwebsockets::Event& args ) {
