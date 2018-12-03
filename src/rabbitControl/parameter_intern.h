@@ -529,35 +529,35 @@ namespace rcp {
         const std::function< void() >& addUpdatedCb(std::function< void() >& func) {
 
             for(auto& f : obj->updatedCallbacks)    {
-                if (&func == &f->Callback) {
+                if (&func == &f->callback) {
                     // already contained
-                    return f->Callback;
+                    return f->callback;
                 }
             }
 
             UpdateEventHolderPtr event = std::make_shared<UpdateEventHolder>(func);
             obj->updatedCallbacks.push_back(std::move(event));
-            return obj->updatedCallbacks.back()->Callback;
+            return obj->updatedCallbacks.back()->callback;
         }
 
         const std::function< void() >& addUpdatedCb(std::function< void() >&& func) {
 
             for(auto& f : obj->updatedCallbacks)    {
-                if (&func == &f->Callback) {
+                if (&func == &f->callback) {
                     // already contained
-                    return f->Callback;
+                    return f->callback;
                 }
             }
 
             UpdateEventHolderPtr event = std::make_shared<UpdateEventHolder>(func);
             obj->updatedCallbacks.push_back(std::move(event));
-            return obj->updatedCallbacks.back()->Callback;
+            return obj->updatedCallbacks.back()->callback;
         }
 
         void removeUpdatedCb(const std::function< void() >& func) {
 
             for(auto it = obj->updatedCallbacks.begin(); it != obj->updatedCallbacks.end(); it++ )    {
-                if (&func == &(it->get()->Callback)) {
+                if (&func == &(it->get()->callback)) {
                     obj->updatedCallbacks.erase(it);
                     break;
                 }
@@ -607,9 +607,9 @@ namespace rcp {
 
         class UpdateEventHolder {
         public:
-            UpdateEventHolder(std::function< void() >&& cb) : Callback(std::move(cb)) {}
-            UpdateEventHolder(std::function< void() >& cb) : Callback(cb) {}
-            const std::function< void() >& Callback;
+            UpdateEventHolder(std::function< void() >&& cb) : callback(std::move(cb)) {}
+            UpdateEventHolder(std::function< void() >& cb) : callback(cb) {}
+            const std::function< void() > callback;
         };
         typedef std::shared_ptr<UpdateEventHolder> UpdateEventHolderPtr;
 
@@ -854,7 +854,7 @@ namespace rcp {
 
             void callUpdatedCb() {
                 for (auto& event : updatedCallbacks) {
-                    event->Callback();
+                    event->callback();
                 }
             }
 
@@ -1179,36 +1179,36 @@ namespace rcp {
         const std::function< void ( T& )>& addValueUpdatedCb(std::function< void(T&) >& func) {
 
             for(auto& f : obj->valueUpdatedCallbacks) {
-                if (&func == &f->Callback) {
+                if (&func == &f->callback) {
                     // already contained
-                    return f->Callback;
+                    return f->callback;
                 }
             }
 
             ValueUpdateEventHolderPtr event = std::make_shared<ValueUpdateEventHolder>(func);
             obj->valueUpdatedCallbacks.push_back(std::move(event));
-            return obj->valueUpdatedCallbacks.back()->Callback;
+            return obj->valueUpdatedCallbacks.back()->callback;
         }
 
         const std::function< void(T&) >& addValueUpdatedCb(std::function< void(T&) >&& func) {
 
             for(auto& f : obj->valueUpdatedCallbacks) {
-                if (&func == &f->Callback) {
+                if (&func == &f->callback) {
                     // already contained
-                    return f->Callback;
+                    return f->callback;
                 }
             }
 
             ValueUpdateEventHolderPtr event = std::make_shared<ValueUpdateEventHolder>(func);
             obj->valueUpdatedCallbacks.push_back(std::move(event));
-            return obj->valueUpdatedCallbacks.back()->Callback;
+            return obj->valueUpdatedCallbacks.back()->callback;
         }
 
         void removeValueUpdatedCb(const std::function< void(T&) >& func) {
 
             for(auto it = obj->valueUpdatedCallbacks.begin(); it != obj->valueUpdatedCallbacks.end(); it++ ) {
 
-                if (&func == &(it->get()->Callback)) {
+                if (&func == &(it->get()->callback)) {
                     obj->valueUpdatedCallbacks.erase(it);
                     break;
                 }
@@ -1233,9 +1233,9 @@ namespace rcp {
 
         class ValueUpdateEventHolder {
         public:
-            ValueUpdateEventHolder(std::function< void(T&) >&& cb) : Callback(std::move(cb)) {}
-            ValueUpdateEventHolder(std::function< void(T&) >& cb) : Callback(cb) {}
-            const std::function< void(T&) >& Callback;
+            ValueUpdateEventHolder(std::function< void(T&) >&& cb) : callback(std::move(cb)) {}
+            ValueUpdateEventHolder(std::function< void(T&) >& cb) : callback(cb) {}
+            const std::function< void(T&) > callback;
         };
         typedef std::shared_ptr<ValueUpdateEventHolder> ValueUpdateEventHolderPtr;
 
@@ -1273,7 +1273,7 @@ namespace rcp {
 
             void callValueUpdatedCb() {
                 for (auto& f : valueUpdatedCallbacks) {
-                    f->Callback(value);
+                    f->callback(value);
                 }
             }
 
