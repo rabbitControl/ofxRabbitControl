@@ -164,11 +164,11 @@ rcp::BooleanParameter ofxRabbitControlServer::expose(ofParameter<bool> & param, 
     }
     p.setValue(param.get());
 
-    p.setValueUpdatedCb([&](bool& v) {
+    p.addValueUpdatedCb([&](bool& v) {
         param.set(v);
     });
 
-    p.setUpdatedCb([&]() {
+    p.addUpdatedCb([&]() {
         param.setName(p.getLabel());
     });
 
@@ -229,11 +229,11 @@ rcp::Int8Parameter ofxRabbitControlServer::expose(ofParameter<char> & param, con
     p.setMaximum(param.getMax());
     p.setValue(param.get());
 
-    p.setValueUpdatedCb([&](int8_t& v) {
+    p.addValueUpdatedCb([&](int8_t& v) {
         param.set(v);
     });
 
-    p.setUpdatedCb([&]() {
+    p.addUpdatedCb([&]() {
         param.setName(p.getLabel());
     });
 
@@ -291,11 +291,11 @@ rcp::Int32Parameter ofxRabbitControlServer::expose(ofParameter<int> & param, con
     p.setMaximum(param.getMax());
     p.setValue(param.get());
 
-    p.setValueUpdatedCb([&](int32_t& v) {
+    p.addValueUpdatedCb([&](int32_t& v) {
         param.set(v);
     });
 
-    p.setUpdatedCb([&]() {
+    p.addUpdatedCb([&]() {
         param.setName(p.getLabel());
     });
 
@@ -356,11 +356,11 @@ rcp::Float32Parameter ofxRabbitControlServer::expose(ofParameter<float> & param,
 
     p.getMinimum();
 
-    p.setValueUpdatedCb([&](float& v) {
+    p.addValueUpdatedCb([&](float& v) {
         param.set(v);
     });
 
-    p.setUpdatedCb([&]() {
+    p.addUpdatedCb([&]() {
         param.setName(p.getLabel());
     });
 
@@ -418,11 +418,11 @@ rcp::Float64Parameter ofxRabbitControlServer::expose(ofParameter<double> & param
     p.setMaximum(param.getMax());
     p.setValue(param.get());
 
-    p.setValueUpdatedCb([&](double& v) {
+    p.addValueUpdatedCb([&](double& v) {
         param.set(v);
     });
 
-    p.setUpdatedCb([&]() {
+    p.addUpdatedCb([&]() {
         param.setName(p.getLabel());
     });
 
@@ -478,11 +478,11 @@ rcp::StringParameter ofxRabbitControlServer::expose(ofParameter<std::string> & p
     }
     p.setValue(param.get());
 
-    p.setValueUpdatedCb([&](std::string& v) {
+    p.addValueUpdatedCb([&](std::string& v) {
         param.set(v);
     });
 
-    p.setUpdatedCb([&]() {
+    p.addUpdatedCb([&]() {
         param.setName(p.getLabel());
     });
 
@@ -541,7 +541,7 @@ rcp::RGBAParameter ofxRabbitControlServer::expose(ofParameter<ofColor> & param, 
     uint32_t cv = param.get().r + (param.get().g << 8) + (param.get().b << 16) + (param.get().a << 24);
     p.setValue(rcp::Color(cv));
 
-    p.setValueUpdatedCb([&](rcp::Color& v) {
+    p.addValueUpdatedCb([&](rcp::Color& v) {
 
         uint32_t cv = v.getValue();
         float r = cv & 0xFF;
@@ -552,7 +552,7 @@ rcp::RGBAParameter ofxRabbitControlServer::expose(ofParameter<ofColor> & param, 
         param.set(ofColor(r, g, b, a));
     });
 
-    p.setUpdatedCb([&]() {
+    p.addUpdatedCb([&]() {
         param.setName(p.getLabel());
     });
 

@@ -99,6 +99,7 @@ public:
 
     template<typename> friend class Parameter;
     friend class ParameterServer;
+    friend class ParameterClient;
 
 private:
     std::shared_ptr<ParameterManager> getShared() {

@@ -36,6 +36,7 @@
 #define RCP_WRITEABLE_H
 
 #include <string>
+#include <memory>
 
 #include "option.h"
 #include "writer.h"

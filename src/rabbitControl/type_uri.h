@@ -38,6 +38,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <iterator>
 
 #include "typedefinition.h"
 #include "iparameter.h"

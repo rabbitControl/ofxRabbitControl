@@ -168,6 +168,7 @@ public:
 
     void dumpHierarchy() {
         root->dumpChildren(0);
+        std::flush(std::cout);
     }
 
 private:
@@ -175,6 +176,7 @@ private:
     bool _update(Packet& Packet, ServerTransporter& transporter, void *id);
     void _version(ServerTransporter& transporter, void *id);
     void _sendParameterFull(ParameterPtr& parameter, ServerTransporter& transporter, void *id);
+    void sendPacket(Packet& packet, void *id=nullptr);
 
     std::shared_ptr<GroupParameter> root;
     std::shared_ptr<ParameterManager> parameterManager;

@@ -35,6 +35,9 @@
 #ifndef IPARAMETER_H
 #define IPARAMETER_H
 
+#include <vector>
+#include <string>
+
 #include "types.h"
 #include "writeable.h"
 #include "optionparser.h"
@@ -103,10 +106,17 @@ namespace rcp {
         virtual bool hasUserdata() const = 0;
         virtual void clearUserdata() = 0;
 
+        // user id
         virtual const std::string& getUserid() const = 0;
         virtual void setUserid(const std::string& userid) = 0;
         virtual bool hasUserid() const = 0;
         virtual void clearUserid() = 0;
+
+        // readonly
+        virtual const bool& getReadonly() const = 0;
+        virtual void setReadonly(const bool& userid) = 0;
+        virtual bool hasReadonly() const = 0;
+        virtual void clearReadonly() = 0;
 
         //
         virtual void update(const ParameterPtr& other) = 0;

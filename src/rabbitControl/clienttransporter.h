@@ -53,7 +53,7 @@ namespace rcp {
     {
     public:
 
-        virtual void connect(std::string host, int port) = 0;
+        virtual void connect(std::string host, int port, bool secure = false) = 0;
         virtual void disconnect() = 0;
         virtual bool isConnected() = 0;
 

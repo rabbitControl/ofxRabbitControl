@@ -47,7 +47,7 @@ void websocketServerTransporter::onConnect( ofxLibwebsockets::Event& args ) {
 }
 
 void websocketServerTransporter::onOpen( ofxLibwebsockets::Event& args ) {
-    ofLogNotice() <<"opened: "<< args.conn.getClientIP();
+    ofLogNotice() <<"client connected: "<< args.conn.getClientIP();
 }
 
 void websocketServerTransporter::onClose( ofxLibwebsockets::Event& args ) {
@@ -62,6 +62,7 @@ void websocketServerTransporter::onMessage( ofxLibwebsockets::Event& args ) {
     if (args.isBinary) {
 
         boost::interprocess::bufferstream input_stream(args.data.getData(), args.data.size());
+
         for (const auto& kv : receive_cb) {
             (kv.first->*kv.second)(input_stream, *this, &args.conn);
         }
@@ -69,6 +70,8 @@ void websocketServerTransporter::onMessage( ofxLibwebsockets::Event& args ) {
     } else {
         ofLogNotice() << "got message " << args.message;
     }
+
+    std::flush(std::cout);
 }
 
 void websocketServerTransporter::onBroadcast( ofxLibwebsockets::Event& args ) {

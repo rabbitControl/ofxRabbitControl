@@ -37,6 +37,7 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 #include "typedefinition.h"
 #include "iparameter.h"

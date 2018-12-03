@@ -36,6 +36,7 @@
 #define NUMBERTYPE_H
 
 #include <iostream>
+#include <limits>
 
 #include "typedefinition.h"
 #include "iparameter.h"

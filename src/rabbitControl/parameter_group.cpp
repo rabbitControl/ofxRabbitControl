@@ -73,7 +73,7 @@ namespace rcp {
             in += "  ";
         }
 
-        std::cout << in << getLabel() << ":\n";
+        std::cout << in << getLabel() << " (" << getId() << "):\n";
 
         in += "  ";
 
@@ -83,7 +83,7 @@ namespace rcp {
                 GroupParameter* group = (GroupParameter*)child.second.get();
                 group->dumpChildren(indent+1);
             } else {
-                std::cout << in << child.second->getLabel() << "\n";
+                std::cout << in << child.second->getLabel() << " (" << child.second->getId() << ")\n";
             }
         }
     }

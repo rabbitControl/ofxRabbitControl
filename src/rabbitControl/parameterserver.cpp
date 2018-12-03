@@ -37,6 +37,7 @@
 #include "packet.h"
 #include "stringstreamwriter.h"
 #include "streamwriter.h"
+#include "versiondata.h"
 
 namespace rcp {
 
@@ -165,14 +166,7 @@ namespace rcp {
         for (auto& p : parameterManager->removedParameter) {
 
             Packet packet(COMMAND_REMOVE, p.second);
-
-            // serialize
-            StringStreamWriter writer;
-            packet.write(writer, false);
-
-            for (auto& transporterW : transporterList) {
-                transporterW.get().sendToAll(writer.getBuffer(), nullptr);
-            }
+            sendPacket(packet);
         }
         parameterManager->removedParameter.clear();
 
@@ -180,19 +174,22 @@ namespace rcp {
         for (auto& p : parameterManager->dirtyParameter) {
 
             Packet packet(COMMAND_UPDATE, p.second);
-
-            // serialize
-            StringStreamWriter writer;
-            packet.write(writer, false);
-
-            for (auto& transporterW : transporterList) {
-                transporterW.get().sendToAll(writer.getBuffer(), nullptr);
-            }
+            sendPacket(packet);
         }
-
         parameterManager->dirtyParameter.clear();
 
         return false;
+    }
+
+    void ParameterServer::sendPacket(Packet& packet, void *id) {
+
+        // serialize
+        StringStreamWriter writer;
+        packet.write(writer, false);
+
+        for (auto& transporterW : transporterList) {
+            transporterW.get().sendToAll(writer.getBuffer(), id);
+        }
     }
 
 
@@ -224,7 +221,6 @@ namespace rcp {
         for (auto& child : root->children()) {
             _sendParameterFull(child.second, transporter, id);
         }
-
     }
 
     bool ParameterServer::_update(Packet& packet, ServerTransporter& transporter, void *id) {
@@ -242,9 +238,14 @@ namespace rcp {
             if (ParameterManager::isValid(chached_param)) {
                 // got it... update it
                 chached_param->update(param);
+
+                // call updateParameter callbacks
+
             } else {
                 // parameter not in cache, add it
                 parameterManager->_addParameter(param);
+
+                // call addParameter callbacks
             }
 
             return true;
@@ -257,7 +258,14 @@ namespace rcp {
     }
 
     void ParameterServer::_version(ServerTransporter& transporter, void *id) {
-        // TODO
+
+        WriteablePtr version = std::make_shared<VersionData>("0.0.99");
+        Packet packet(COMMAND_VERSION, version);
+
+        StringStreamWriter writer;
+        packet.write(writer, false);
+
+        transporter.sendToOne(writer.getBuffer(), id);
     }
 
 }
