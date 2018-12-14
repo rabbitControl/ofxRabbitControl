@@ -1,7 +1,8 @@
 # ofxRabbitControl
 openFrameworks addon for RabbitControl
+(this addon depends on ofxLibwebsockets)
 
 expose ofParameter with this addon via rabbitControl.
 
-use the html-client to connect to the rabbitServer and control your application: 
-https://github.com/rabbitControl/rcp-js-client
+use a rabbitControl client to connect to the rabbitServer and control your application: 
+http://rabbitcontrol.github.io/client/
