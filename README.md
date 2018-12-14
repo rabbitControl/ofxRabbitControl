@@ -1,5 +1,6 @@
 # ofxRabbitControl
 openFrameworks addon for RabbitControl
+
 (this addon depends on ofxLibwebsockets)
 
 expose ofParameter with this addon via rabbitControl.
