@@ -1,6 +1,8 @@
 # ofxRabbitControl
 openFrameworks addon for RabbitControl
 
+[![Build status](https://ci.appveyor.com/api/projects/status/ujn3dpe64joy0sy2?svg=true)](https://ci.appveyor.com/project/i-n-g-o/ofxrabbitcontrol)
+
 (this addon depends on ofxLibwebsockets)
 
 expose ofParameter with this addon via rabbitControl.
