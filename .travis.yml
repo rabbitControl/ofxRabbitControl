@@ -193,6 +193,8 @@ install:
   - scripts/ci/addons/install.sh
   - cd addons
   - git clone --depth=1  --branch=master https://github.com/robotconscience/ofxLibwebsockets.git
+  - ls
+  - cd ~/openFrameworks
 
 script:
   - scripts/ci/addons/build.sh
