@@ -146,6 +146,10 @@ enum string_options_t {
     STRING_OPTIONS_REGULAR_EXPRESSION = 49
 };
 
+enum infodata_options_t {
+    INFODATA_OPTIONS_APPLICATIONID = 26
+};
+
 enum array_options_t {
     ARRAY_OPTIONS_DEFAULT = 48
 };
@@ -202,12 +206,6 @@ enum number_options_t {
 
 enum ipv6_options_t {
     IPV6_OPTIONS_DEFAULT = 48
-};
-
-enum metadata_options_t {
-    METADATA_OPTIONS_VERSION = 26,
-    METADATA_OPTIONS_CAPABILITIES = 27,
-    METADATA_OPTIONS_COMMANDS = 28
 };
 
 enum packet_options_t {
