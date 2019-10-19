@@ -147,8 +147,7 @@ enum string_options_t {
 };
 
 enum array_options_t {
-    ARRAY_OPTIONS_DEFAULT = 48,
-    ARRAY_OPTIONS_STRUCTURE = 49
+    ARRAY_OPTIONS_DEFAULT = 48
 };
 
 enum numberbox_format_t {
