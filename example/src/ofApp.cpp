@@ -20,6 +20,7 @@ void ofApp::setup(){
     // setup rabbitserver
 
     // add a transporter
+    rabbit.setApplicationId("ofx rabbit server");
     rabbit.addTransporter(transporter);
 
     // bind to port
