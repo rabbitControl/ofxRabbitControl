@@ -98,12 +98,12 @@ namespace rcp {
 
 
     void StreamWriter::write(const rcp::IPv4& s) {
-        os << static_cast<uint32_t>(s.getIp());
+        os << s.getAddress();
     }
 
     void StreamWriter::write(const rcp::IPv6& s) {
         for (int i=0; i<4; i++) {
-            os << static_cast<uint32_t>(s.getIp().__u6_addr.__u6_addr32[i]);
+            os << static_cast<uint32_t>(s.getAddress(i));
         }
     }
 

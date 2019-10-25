@@ -35,8 +35,8 @@
 #ifndef RCP_IP_H
 #define RCP_IP_H
 
-#include <string>
-#include <arpa/inet.h>
+#include <ostream>
+#include <inttypes.h>
 
 namespace rcp {
 
@@ -44,28 +44,21 @@ namespace rcp {
 
     public:
         IPv4() {}
-        IPv4(const std::string& ip) {
-            setAddress(ip);
-        }
         IPv4(const uint32_t& ip) {
-            memcpy(&m_ip, &ip, sizeof (in_addr_t));
+            m_ip = ip;
         }
 
-        void setAddress(const std::string& ip) {
-            m_ip = inet_addr(ip.c_str());
+        void setAddress(const uint32_t& ip) {
+            m_ip = ip;
         }
-        std::string getAddress() const {
-            struct in_addr in = {m_ip};
-            return std::string(inet_ntoa(in));
-        }
-        in_addr_t getIp() const { return m_ip; }
+        uint32_t getAddress() const { return m_ip; }
 
         bool operator==(const IPv4& other) {
-            return m_ip == other.getIp();
+            return m_ip == other.getAddress();
         }
 
     private:
-        in_addr_t m_ip{};
+        uint32_t m_ip;
     };
 
 
@@ -74,34 +67,46 @@ namespace rcp {
 
     public:
         IPv6() {}
-        IPv6(const std::string& ip) {
-            setAddress(ip);
-        }
         IPv6(uint32_t v1, uint32_t v2, uint32_t v3, uint32_t v4) {
-            buf.__u6_addr.__u6_addr32[0] = v1;
-            buf.__u6_addr.__u6_addr32[1] = v2;
-            buf.__u6_addr.__u6_addr32[2] = v3;
-            buf.__u6_addr.__u6_addr32[3] = v4;
+            m_ip[0] = v1;
+            m_ip[1] = v2;
+            m_ip[2] = v3;
+            m_ip[3] = v4;
         }
 
-        void setAddress(const std::string& ip) {
-            int res = inet_pton(AF_INET6, ip.c_str(), &buf);
+        void setAddress(uint32_t v1, uint32_t v2, uint32_t v3, uint32_t v4) {
+            m_ip[0] = v1;
+            m_ip[1] = v2;
+            m_ip[2] = v3;
+            m_ip[3] = v4;
         }
-        std::string getAddress() const {
-            char dst[INET6_ADDRSTRLEN];
-            const char *adr = inet_ntop(AF_INET6, &buf, dst, INET6_ADDRSTRLEN);
-            return std::string(adr);
+        uint32_t getAddress(const int index) const {
+            if (index < 0 || index > 3) {
+                return 0;
+            }
+            return m_ip[index];
         }
-        const in6_addr& getIp() const { return buf; }
 
         bool operator==(const IPv6& other) {
-            return &buf == &other.getIp();
+            return m_ip[0] == other.getAddress(0) &&
+                    m_ip[1] == other.getAddress(1) &&
+                    m_ip[2] == other.getAddress(2) &&
+                    m_ip[3] == other.getAddress(3);
         }
 
     private:
-        in6_addr buf{};
+        uint32_t m_ip[4];
     };
 
+
+    std::ostream& operator<<(std::ostream& out, const IPv4& v);
+    std::ostream& operator<<(std::ostream& out, const IPv6& v);
+
+    IPv4& swap_endian(const IPv4 &u);
+    IPv6& swap_endian(const IPv6 &u);
+
+    IPv4 readFromStream(std::istream& is, const IPv4& i);
+    IPv6 readFromStream(std::istream& is, const IPv6& i);
 
 }
 

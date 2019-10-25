@@ -139,12 +139,12 @@ namespace rcp {
     }
 
     void StringStreamWriter::write(const rcp::IPv4& s) {
-        write(static_cast<uint32_t>(s.getIp()));
+        write(s.getAddress());
     }
 
     void StringStreamWriter::write(const rcp::IPv6& s) {
         for (int i=0; i<4; i++) {
-            write(static_cast<uint32_t>(s.getIp().__u6_addr.__u6_addr32[i]));
+            write(static_cast<uint32_t>(s.getAddress(i)));
         }
     }
 

@@ -63,6 +63,10 @@ namespace rcp {
         uint32_t value{};
     };
 
+    Color& swap_endian(const Color& u);
+    Color readFromStream(std::istream& is, const Color& i);
+
+    std::ostream& operator<<(std::ostream& out, const Color& v);
 }
 
 #endif

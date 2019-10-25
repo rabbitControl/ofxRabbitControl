@@ -75,11 +75,8 @@ namespace rcp {
         return dest.u;
     }
 
-    // TODO do this with templates...?
-    Color& swap_endian(const Color& u);
-    std::string& swap_endian(const std::string &u);
-    IPv4& swap_endian(const IPv4 &u);
-    IPv6& swap_endian(const IPv6 &u);
+    // TODO do this with templates...?    
+    std::string& swap_endian(const std::string &u);    
 
     template <typename T>
     Range<T>& swap_endian(Range<T>& u) {
@@ -106,10 +103,7 @@ namespace rcp {
         return value;
     }
 
-    Color readFromStream(std::istream& is, const Color& i);
-    std::string readFromStream(std::istream& is, const std::string& i);
-    IPv4 readFromStream(std::istream& is, const IPv4& i);
-    IPv6 readFromStream(std::istream& is, const IPv6& i);
+    std::string readFromStream(std::istream& is, const std::string& i);    
 
 
 
@@ -135,13 +129,6 @@ namespace rcp {
     std::string readTinyString(std::istream& is);
     std::string readShortString(std::istream& is);
     std::string readLongString(std::istream& is);
-
-
-    //---------------------------------------------------
-    // << operator used in dump-method...
-    std::ostream& operator<<(std::ostream& out, const Color& v);
-    std::ostream& operator<<(std::ostream& out, const IPv4& v);
-    std::ostream& operator<<(std::ostream& out, const IPv6& v);
 
     template <typename T>
     std::ostream& operator<<(std::ostream& out, const Range<T>& v) {
