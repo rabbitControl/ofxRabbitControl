@@ -39,7 +39,7 @@
 #include "parameter_range.h"
 #include "parameter_custom.h"
 #include "parameter_parser.h"
-
+#include "infodata.h"
 
 namespace rcp {
 
@@ -113,12 +113,10 @@ namespace rcp {
                             // ERROR
                             break;
 
-                        case COMMAND_VERSION: {
-                            // TODO
-                            // expect version data
-                            // tiny-string follows by terminator
-                            std::string v = readTinyString(is);
-                            std::cout << "version: " << v << "\n";
+                        case COMMAND_INFO: {
+                            // get infodata
+                            const InfoDataPtr& info_data = InfoData::parse(is);
+                            packet_option.getValue().setData(info_data);
                         }
                             break;
 

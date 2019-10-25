@@ -105,7 +105,7 @@ namespace rcp {
                 _update(the_packet);
                 break;
 
-            case COMMAND_VERSION:
+            case COMMAND_INFO:
                 std::cerr << "got version command: ???\n";
                 break;
 

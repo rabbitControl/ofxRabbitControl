@@ -171,10 +171,17 @@ public:
         std::flush(std::cout);
     }
 
+    void setApplicationId(const std::string& appid) {
+        m_applicationId = appid;
+    }
+    std::string getApplicationId() {
+        return m_applicationId;
+    }
+
 private:
     void _init(ServerTransporter& transporter, void *id);
     bool _update(Packet& Packet, ServerTransporter& transporter, void *id);
-    void _version(ServerTransporter& transporter, void *id);
+    void _version(Packet& packet, ServerTransporter& transporter, void *id);
     void _sendParameterFull(ParameterPtr& parameter, ServerTransporter& transporter, void *id);
     void sendPacket(Packet& packet, void *id=nullptr);
 
@@ -182,6 +189,7 @@ private:
     std::shared_ptr<ParameterManager> parameterManager;
     std::vector<std::reference_wrapper<ServerTransporter> > transporterList;
 
+    std::string m_applicationId;
 //    Events:
 //    onError(Exception ex);
 };

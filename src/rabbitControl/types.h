@@ -93,7 +93,7 @@ enum widgettype_t {
 
 enum command_t {
     COMMAND_INVALID = 0,
-    COMMAND_VERSION = 1,
+    COMMAND_INFO = 1,
     COMMAND_INITIALIZE = 2,
     COMMAND_DISCOVER = 3,
     COMMAND_UPDATE = 4,
