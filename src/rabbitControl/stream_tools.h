@@ -38,6 +38,7 @@
 #include <istream>
 #include <ostream>
 #include <string>
+#include <vector>
 
 #include "color.h"
 #include "ip.h"
@@ -118,10 +119,10 @@ namespace rcp {
 #endif
 
         // read to buffer
-        char buffer[size];
-        is.read(buffer, size);
+		std::vector<char> buffer( size );
+		is.read(buffer.data(), size);
 
-        return std::string(buffer, size);
+		return std::string(buffer.data(), size);
     }
 
 

@@ -78,7 +78,7 @@ namespace rcp {
 
         void dump() {
             size_t len = buffer.str().size();
-            char data[len];
+            char* data = new char[len];
 
             buffer.seekg(0);
             buffer.get(data, len);
@@ -87,6 +87,8 @@ namespace rcp {
                 printf("0x%02X ", static_cast<uint8_t>(data[i]));
             }
             printf("\n");
+
+            delete []data;
         }
 
         void clear() { buffer.str(""); }

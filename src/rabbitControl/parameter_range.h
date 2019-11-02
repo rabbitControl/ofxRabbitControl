@@ -48,10 +48,11 @@ namespace rcp {
             , public IElementParameter
     {
     public:
+
         typedef TypeDefinition<Range<ElementType>, DATATYPE_RANGE, td_num> _RangeType;
         typedef ValueParameter<Range<ElementType>, TypeDefinition<Range<ElementType>, DATATYPE_RANGE, td_num>, DATATYPE_RANGE> _RangeParameter;
 
-        static ParameterPtr create(int16_t id) {
+        static std::shared_ptr< _RangeParameter > create(int16_t id) {
             return std::make_shared<RangeParameter<ElementType> >(id);
         }
 

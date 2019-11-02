@@ -51,6 +51,6 @@
 #include "parametermanager.h"
 #include "parameterserver.h"
 
-#define RCP_SPECIFICATION_VERSION "0.0.0"
+#define RCP_SPECIFICATION_VERSION "0.0.1"
 
 #endif

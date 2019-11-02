@@ -61,10 +61,11 @@ namespace rcp {
             long long length = data.tellg();
             data.seekg (0, data.beg);
 
-            char d[length];
+            char* d = new char[length];
             data.read(d, length);
 
             m_transporter.send(d);
+            delete []d;
         }
         m_parameterManager->dirtyParameter.clear();
 
@@ -178,17 +179,17 @@ namespace rcp {
             return;
         }
 
-        // assume this is a parameter!!
-        rcp::ParameterPtr param = std::dynamic_pointer_cast<rcp::IParameter>(packet.getData());
-        if (param) {
+        // assume this is id-data
+        IdDataPtr id_data = std::dynamic_pointer_cast<IdData>(packet.getData());
+        if (id_data) {
 
-            std::cout << "remove param: " << param->getId() << "\n";
+            std::cout << "remove param: " << id_data->getId() << "\n";
 
-            rcp::ParameterPtr chached_param = m_parameterManager->getParameter(param->getId());
+            rcp::ParameterPtr chached_param = m_parameterManager->getParameter(id_data->getId());
             if (rcp::ParameterManager::isValid(chached_param)) {
 
                 // parameter is in list, remove it
-                std::cout << "removing exisiting parameter: " << param->getId() << "\n";
+                std::cout << "removing exisiting parameter: " << id_data->getId() << "\n";
 
                 // call disconnected callbacks
                 for (const auto& kv : parameter_removed_cb) {
@@ -199,7 +200,7 @@ namespace rcp {
                 m_parameterManager->removeParameterDirect(chached_param);
 
             } else {
-                std::cout << "parameter not in list!: " << param->getId() << "\n";
+                std::cout << "parameter not in list!: " << id_data->getId() << "\n";
             }
             return;
 

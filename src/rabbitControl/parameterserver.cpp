@@ -164,9 +164,10 @@ namespace rcp {
 
 
         // send removes
-        for (auto& p : parameterManager->removedParameter) {
-
-            Packet packet(COMMAND_REMOVE, p.second);
+        for (auto& p : parameterManager->removedParameter)
+        {
+            WriteablePtr id_data = IdData::create(p.second->getId());
+            Packet packet(COMMAND_REMOVE, id_data);
             sendPacket(packet);
         }
         parameterManager->removedParameter.clear();
@@ -270,7 +271,7 @@ namespace rcp {
             }
         } else {
             // no data, respond with version
-            WriteablePtr version = std::make_shared<InfoData>(RCP_SPECIFICATION_VERSION, m_applicationId);
+            WriteablePtr version = InfoData::create(RCP_SPECIFICATION_VERSION, m_applicationId);
             Packet resp_packet(COMMAND_INFO, version);
             StringStreamWriter writer;
             resp_packet.write(writer, false);

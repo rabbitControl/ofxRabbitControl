@@ -40,6 +40,7 @@
 #include "parameter_custom.h"
 #include "parameter_parser.h"
 #include "infodata.h"
+#include "iddata.h"
 
 namespace rcp {
 
@@ -68,6 +69,26 @@ namespace rcp {
             // create proper packet
             Option<Packet> packet_option = Packet(command);
 
+            //------------------------------------
+            // handle update value
+            if (packet_option.getValue().getCommand() == COMMAND_UPDATEVALUE) {
+
+                WriteablePtr param = ParameterParser::parseUpdateValue(is);
+
+                if (param != nullptr) {
+                    packet_option.getValue().setData(param);
+                }
+
+                if (!is.eof()) {
+                    // should be eof
+                    // throw error?
+                }
+
+                return packet_option;
+            }
+
+
+            //------------------------------------
             // read options
             while(!is.eof()) {
 
@@ -121,10 +142,16 @@ namespace rcp {
                             break;
 
                         case COMMAND_INITIALIZE:
-                            // TODO
+                        {
                             // exect ID-data or null
-                            // parameter-id followed by terminator
+                            const IdDataPtr& id_data = IdData::parse(is);
+
+                            if (id_data) {
+                                packet_option.getValue().setData(id_data);
+                            }
+
                             break;
+                        }
 
                         case COMMAND_DISCOVER:
                             // TODO
@@ -133,8 +160,7 @@ namespace rcp {
                             break;
 
                         case COMMAND_UPDATE:
-                        case COMMAND_REMOVE: {
-
+                        {
                             // we expect a Parameter
                             WriteablePtr param = ParameterParser::parse(is);
 
@@ -145,9 +171,20 @@ namespace rcp {
                             break;
                         }
 
+                        case COMMAND_REMOVE:
+                        {
+                            // we expect ID Data
+                            const IdDataPtr& id_data = IdData::parse(is);
+
+                            if (id_data) {
+                                packet_option.getValue().setData(id_data);
+                            }
+
+                            break;
+                        }
+
                         case COMMAND_UPDATEVALUE:
-                            // TODO
-                            // epxect special update command
+                            // handled above
                             break;
                         } // switch
 
@@ -159,46 +196,51 @@ namespace rcp {
         }
 
         Packet() :
-            command(COMMAND_INVALID)
-          , timestamp(0)
+            m_command(COMMAND_INVALID)
+          , m_timestamp(0)
           , m_hasTimestamp(false)
+          , m_data(nullptr)
           , m_hasData(false)
         {}
 
         Packet(enum command_t cmd) :
-            command(cmd)
-          , timestamp(0)
+            m_command(cmd)
+          , m_timestamp(0)
           , m_hasTimestamp(false)
+          , m_data(nullptr)
           , m_hasData(false)
         {}
 
         Packet(enum command_t cmd, ParameterPtr& data) :
-            command(cmd)
-          , timestamp(0)
+            m_command(cmd)
+          , m_timestamp(0)
           , m_hasTimestamp(false)
-          , m_data(data)
-          , m_hasData(true)
-        {}
+        {
+            setData(data);
+        }
 
         Packet(enum command_t cmd, WriteablePtr& data) :
-            command(cmd)
-          , timestamp(0)
+            m_command(cmd)
+          , m_timestamp(0)
           , m_hasTimestamp(false)
-          , m_data(data)
-          , m_hasData(true)
-        {}
+        {
+            setData(data);
+        }
 
         Packet(enum command_t cmd, uint64_t timestamp, ParameterPtr& data) :
-            command(cmd)
-          , timestamp(timestamp)
+            m_command(cmd)
+          , m_timestamp(timestamp)
           , m_hasTimestamp(true)
-          , m_data(data)
-          , m_hasData(true)
-        {}
+        {
+            setData(data);
+        }
 
-        Packet(const Packet& other) {
-
-            command = other.getCommand();
+        Packet(const Packet& other) :
+            m_hasTimestamp(false)
+          , m_data(nullptr)
+          , m_hasData(false)
+        {
+            m_command = other.getCommand();
 
             if (other.hasTimestamp()) {
                 setTimestamp(other.getTimestamp());
@@ -215,7 +257,7 @@ namespace rcp {
 
         Packet& operator=(const Packet& other) {
 
-            command = other.getCommand();
+            m_command = other.getCommand();
 
             if (other.hasTimestamp()) {
                 setTimestamp(other.getTimestamp());
@@ -236,11 +278,11 @@ namespace rcp {
         // writeable interface
         virtual void write(Writer& out, bool all) {
 
-            out.write(static_cast<char>(command));
+            out.write(static_cast<char>(m_command));
 
             if (m_hasTimestamp) {
                 out.write(static_cast<char>(PACKET_OPTIONS_TIMESTAMP));
-                out.write(timestamp);
+                out.write(m_timestamp);
             }
 
             if (m_hasData) {
@@ -256,11 +298,11 @@ namespace rcp {
         // public methods
 
         void setCommand(enum command_t cmd) {
-            command = cmd;
+            m_command = cmd;
         }
 
         enum command_t getCommand() const {
-            return command;
+            return m_command;
         }
 
 
@@ -270,12 +312,12 @@ namespace rcp {
         }
 
         void setTimestamp(uint64_t timestamp) {
-            timestamp = timestamp;
+            m_timestamp = timestamp;
             m_hasTimestamp = true;
         }
 
         uint64_t getTimestamp() const {
-            return timestamp;
+            return m_timestamp;
         }
 
         void clearTimestamp() {
@@ -294,7 +336,7 @@ namespace rcp {
 
         void setData(const WriteablePtr& data) {
             m_data = data;
-            m_hasData = true;
+            m_hasData = data != nullptr;
         }
 
         WriteablePtr getData() const {
@@ -302,6 +344,7 @@ namespace rcp {
         }
 
         void clearData() {
+            m_data = nullptr;
             m_hasData = false;
         }
 
@@ -309,10 +352,10 @@ namespace rcp {
     private:
 
         // mandatory
-        enum command_t command;
+        enum command_t m_command;
 
         // options
-        uint64_t timestamp;
+        uint64_t m_timestamp;
         bool m_hasTimestamp;
 
         WriteablePtr m_data;

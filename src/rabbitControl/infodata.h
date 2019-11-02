@@ -45,6 +45,10 @@ namespace rcp {
             return info_data;
         }
 
+        static inline InfoDataPtr create(const std::string& version, const std::string& applicationId) {
+            return std::make_shared<InfoData>(version, applicationId);
+        }
+
 
         //----------------------------------------
         //
