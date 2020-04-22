@@ -774,7 +774,7 @@ namespace rcp {
 
 
                 // parent id
-                if (auto p = parent.lock()) {
+                if (std::shared_ptr<IParameter> p = parent.lock()) {
 
                     if (all || parentChanged) {
                         out.write(static_cast<char>(PARAMETER_OPTIONS_PARENTID));

@@ -84,6 +84,7 @@ namespace rcp {
             _init(transporter, id);
             break;
 
+        case COMMAND_UPDATEVALUE:
         case COMMAND_UPDATE:
             if (_update(the_packet, transporter, id)) {
                 // send data to all clients
@@ -98,7 +99,6 @@ namespace rcp {
             _version(the_packet, transporter, id);
             break;
 
-        case COMMAND_UPDATEVALUE:
         case COMMAND_DISCOVER:
             // not implemented
             break;

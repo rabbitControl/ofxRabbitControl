@@ -61,6 +61,9 @@ namespace rcp {
         std::map<ParameterClientListener*, void(ParameterClientListener::*)(ParameterPtr parameter)> parameter_removed_cb;
 //        onError(Exception ex);
 //        statusChanged(Status status, String message);
+
+        std::string m_serverVersion;
+        std::string m_serverApplicationId;
     };
 
 }
