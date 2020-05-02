@@ -1,3 +1,2 @@
 ofxRabbitControl
 ofxGui
-ofxLibwebsockets
