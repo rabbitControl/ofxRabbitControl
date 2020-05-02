@@ -37,7 +37,7 @@
 
 #include "ofParameter.h"
 
-#include "websocketTransporter.h"
+#include "websocketServerTransporter.h"
 #include "rabbitControl/parameterserver.h"
 
 class ofxRabbitControlServer : public rcp::ParameterServer
