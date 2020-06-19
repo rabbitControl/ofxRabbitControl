@@ -76,12 +76,16 @@ namespace rcp {
 
         //------------------------------------
         // implement writeable
-        void write(Writer& out, bool all) {
+        virtual void write(Writer& out, bool all) {
 
             obj->write(out, all);
 
             // terminator
             out.write(static_cast<char>(TERMINATOR));
+        }
+
+        virtual void writeMandatory(Writer& out) const {
+            obj->writeMandatory(out);
         }
 
         //------------------------------------
@@ -106,7 +110,8 @@ namespace rcp {
                     T def = readFromStream(is, def);
                     CHECK_STREAM
 
-                    setDefault(def);
+                    obj->hasDefaultValue = true;
+                    obj->defaultValue = def;
                     break;
                 }
                 case NUMBER_OPTIONS_MINIMUM: {
@@ -114,7 +119,8 @@ namespace rcp {
                     T min = readFromStream(is, min);
                     CHECK_STREAM
 
-                    setMinimum(min);
+                    obj->hasMinimum = true;
+                    obj->minimum = min;
                     break;
                 }
                 case NUMBER_OPTIONS_MAXIMUM: {
@@ -122,7 +128,8 @@ namespace rcp {
                     T max = readFromStream(is, max);
                     CHECK_STREAM
 
-                    setMaximum(max);
+                    obj->hasMaximum = true;
+                    obj->maximum = max;
                     break;
                 }
                 case NUMBER_OPTIONS_MULTIPLEOF: {
@@ -130,7 +137,8 @@ namespace rcp {
                     T mult = readFromStream(is, mult);
                     CHECK_STREAM
 
-                    setMultipleof(mult);
+                    obj->hasMultipleof = true;
+                    obj->multipleof = mult;
                     break;
                 }
                 case NUMBER_OPTIONS_SCALE: {
@@ -138,7 +146,8 @@ namespace rcp {
                     number_scale_t scale = static_cast<number_scale_t>(is.get());
                     CHECK_STREAM
 
-                    setScale(scale);
+                    obj->hasScale = true;
+                    obj->scale = scale;
                     break;
                 }
                 case NUMBER_OPTIONS_UNIT: {
@@ -146,7 +155,8 @@ namespace rcp {
                     std::string unit = readTinyString(is);
                     CHECK_STREAM
 
-                    setUnit(unit);
+                    obj->hasUnit = true;
+                    obj->unit = unit;
                     break;
                 }
                 }
@@ -188,7 +198,11 @@ namespace rcp {
 
         //------------------------------------
         // implement INumberDefinition
-        virtual T getMinimum() const { return obj->minimum; }
+        virtual T getMinimum() const {
+            if (obj->hasMinimum)
+                return obj->minimum;
+            return 0;
+        }
         virtual void setMinimum(const T& val) {
 
             obj->hasMinimum = true;
@@ -208,7 +222,11 @@ namespace rcp {
             setDirty();
         }
 
-        virtual T getMaximum() const { return obj->maximum; }
+        virtual T getMaximum() const {
+            if (obj->hasMaximum)
+                return obj->maximum;
+            return 0;
+        }
         virtual void setMaximum(const T& val) {
 
             obj->hasMaximum = true;
@@ -228,7 +246,11 @@ namespace rcp {
             setDirty();
         }
 
-        virtual T getMultipleof() const { return obj->multipleof; }
+        virtual T getMultipleof() const {
+            if (obj->hasMultipleof)
+                return obj->multipleof;
+            return 0;
+        }
         virtual void setMultipleof(const T& val) {
 
             obj->hasMultipleof = true;
@@ -248,7 +270,11 @@ namespace rcp {
             setDirty();
         }
 
-        virtual number_scale_t getScale() const { return obj->scale; }
+        virtual number_scale_t getScale() const {
+            if (obj->hasScale)
+                return obj->scale;
+            return NUMBER_SCALE_LINEAR;
+        }
         virtual void setScale(const number_scale_t& val) {
 
             obj->hasScale = true;
@@ -287,6 +313,16 @@ namespace rcp {
             obj->unitChanged = true;
 
             setDirty();
+        }
+
+
+        virtual bool anyOptionChanged() const {
+            return obj->defaultValueChanged
+                    || obj->minimumChanged
+                    || obj->maximumChanged
+                    || obj->multipleofChanged
+                    || obj->scaleChanged
+                    || obj->unitChanged;
         }
 
         virtual void dump() {
@@ -383,9 +419,13 @@ namespace rcp {
               , parameter(param)
             {}
 
-            void write(Writer& out, bool all) {
-
+            void writeMandatory(Writer& out) {
                 out.write(static_cast<char>(datatype));
+            }
+
+            virtual void write(Writer& out, bool all) {
+
+                writeMandatory(out);
 
                 // write default value
                 if (hasDefaultValue) {
@@ -504,28 +544,28 @@ namespace rcp {
             datatype_t datatype;
 
             // options - base
-            T defaultValue{};
+            T defaultValue{0};
             bool hasDefaultValue;
             bool defaultValueChanged;
 
             // options - number
-            T minimum{};
+            T minimum{0};
             bool hasMinimum;
             bool minimumChanged;
 
-            T maximum{};
+            T maximum{0};
             bool hasMaximum;
             bool maximumChanged;
 
-            T multipleof{};
+            T multipleof{0};
             bool hasMultipleof;
             bool multipleofChanged;
 
-            number_scale_t scale{};
+            number_scale_t scale{NUMBER_SCALE_LINEAR};
             bool hasScale;
             bool scaleChanged;
 
-            std::string unit{};
+            std::string unit{""};
             bool hasUnit;
             bool unitChanged;
 

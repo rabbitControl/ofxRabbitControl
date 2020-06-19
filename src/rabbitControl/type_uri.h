@@ -140,6 +140,10 @@ namespace rcp {
             out.write(static_cast<char>(TERMINATOR));
         }
 
+        virtual void writeMandatory(Writer& out) const {
+            obj->writeMandatory(out);
+        }
+
         //------------------------------------
         // implement optionparser
         void parseOptions(std::istream& is) {
@@ -163,7 +167,8 @@ namespace rcp {
                     std::string def = readLongString(is);
                     CHECK_STREAM
 
-                    setDefault(def);
+                    obj->hasDefaultValue = true;
+                    obj->defaultValue = def;
                     break;
                 }
                 case URI_OPTIONS_FILTER: {
@@ -171,7 +176,8 @@ namespace rcp {
                     std::string filter = readTinyString(is);
                     CHECK_STREAM
 
-                    setFilter(filter);
+                    obj->hasFilter = true;
+                    obj->filter = filter;
                     break;
                 }
 
@@ -189,6 +195,12 @@ namespace rcp {
 
                 }
             }
+        }
+
+        virtual bool anyOptionChanged() const {
+            return obj->defaultValueChanged
+                    || obj->filterChanged
+                    || obj->schemaChanged;
         }
 
         virtual std::string readValue(std::istream& is) {
@@ -240,9 +252,14 @@ namespace rcp {
               , parameter(param)
             {}
 
+
+            void writeMandatory(Writer& out) {
+                out.write(static_cast<char>(datatype));
+            }
+
             void write(Writer& out, bool all) {
 
-                out.write(static_cast<char>(datatype));
+                writeMandatory(out);
 
                 // write default value
                 if (hasDefaultValue) {
@@ -308,12 +325,12 @@ namespace rcp {
             datatype_t datatype;
 
             // options - default
-            std::string defaultValue{};
+            std::string defaultValue{""};
             bool hasDefaultValue;
             bool defaultValueChanged;
 
             // options - filter
-            std::string filter{};
+            std::string filter{""};
             bool hasFilter;
             bool filterChanged;
 

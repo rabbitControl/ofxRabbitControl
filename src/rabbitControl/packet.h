@@ -280,18 +280,31 @@ namespace rcp {
 
             out.write(static_cast<char>(m_command));
 
-            if (m_hasTimestamp) {
-                out.write(static_cast<char>(PACKET_OPTIONS_TIMESTAMP));
-                out.write(m_timestamp);
+            if (m_command == COMMAND_UPDATEVALUE)
+            {
+                // only parameter
+                ParameterPtr param = std::dynamic_pointer_cast<IParameter>(m_data);
+                if (param)
+                {
+                    param->write(out, all);
+                }
+            }
+            else
+            {
+                if (m_hasTimestamp) {
+                    out.write(static_cast<char>(PACKET_OPTIONS_TIMESTAMP));
+                    out.write(m_timestamp);
+                }
+
+                if (m_hasData) {
+                    out.write(static_cast<char>(PACKET_OPTIONS_DATA));
+                    m_data->write(out, all);
+                }
+
+                // terminator
+                out.write(static_cast<char>(TERMINATOR));
             }
 
-            if (m_hasData) {
-                out.write(static_cast<char>(PACKET_OPTIONS_DATA));               
-                m_data->write(out, all);
-            }
-
-            // terminator
-            out.write(static_cast<char>(TERMINATOR));
         }
 
 

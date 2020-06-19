@@ -152,6 +152,10 @@ namespace rcp {
             out.write(static_cast<char>(TERMINATOR));
         }
 
+        virtual void writeMandatory(Writer& out) const {
+            obj->writeMandatory(out);
+        }
+
         //------------------------------------
         // implement optionparser
         void parseOptions(std::istream& is) {
@@ -175,7 +179,8 @@ namespace rcp {
                     std::string d = readFromStream(is, d);
                     CHECK_STREAM
 
-                    setDefault(d);
+                    obj->hasDefaultValue = true;
+                    obj->defaultValue = d;
                     break;
                 }
                 case ENUM_OPTIONS_ENTRIES: {
@@ -185,7 +190,7 @@ namespace rcp {
                     CHECK_STREAM
                     while (option != "") {
 
-                        addOption(option);
+                        obj->options.push_back(option);
 
                         option = readTinyString(is);
                         CHECK_STREAM
@@ -197,11 +202,18 @@ namespace rcp {
                     bool multi = readFromStream(is, multi);
                     CHECK_STREAM
 
-                    setMultiselect(multi);   
+                    obj->hasMultiselect = true;
+                    obj->multiselect = multi;
                     break;
                 }
                 }
             }
+        }
+
+        virtual bool anyOptionChanged() const {
+            return obj->defaultValueChanged
+                    || obj->optionsChanged
+                    || obj->multiselectChanged;
         }
 
         virtual std::string readValue(std::istream& is) {
@@ -253,9 +265,13 @@ namespace rcp {
               , parameter(param)
             {}
 
+            void writeMandatory(Writer& out) {
+                out.write(static_cast<char>(datatype));
+            }
+
             void write(Writer& out, bool all) {
 
-                out.write(static_cast<char>(datatype));
+                writeMandatory(out);
 
                 // write default value
                 if (hasDefaultValue) {
@@ -322,7 +338,7 @@ namespace rcp {
             datatype_t datatype;
 
             // options - base
-            std::string defaultValue{};
+            std::string defaultValue{""};
             bool hasDefaultValue;
             bool defaultValueChanged;
 
@@ -330,7 +346,7 @@ namespace rcp {
             std::vector<std::string> options;
             bool optionsChanged;
 
-            bool multiselect{};
+            bool multiselect{false};
             bool hasMultiselect;
             bool multiselectChanged;
 

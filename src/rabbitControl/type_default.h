@@ -97,12 +97,16 @@ namespace rcp {
 
         //------------------------------------
         // implement writeable
-        void write(Writer& out, bool all) {
+        virtual void write(Writer& out, bool all) {
 
             obj->write(out, all);
 
             // terminator
             out.write(static_cast<char>(TERMINATOR));
+        }
+
+        virtual void writeMandatory(Writer& out) const {
+            obj->writeMandatory(out);
         }
 
 
@@ -129,7 +133,8 @@ namespace rcp {
                     T def = readFromStream(is, def);
                     CHECK_STREAM   
 
-                    setDefault(def);
+                    obj->hasDefaultValue = true;
+                    obj->defaultValue = def;
                     break;
                 }
                 }
@@ -137,6 +142,10 @@ namespace rcp {
             }
         } // parseOptions
 
+
+        virtual bool anyOptionChanged() const {
+            return obj->defaultValueChanged;
+        }
 
         virtual T readValue(std::istream& is) {
             T value = readFromStream(is, value);
@@ -174,9 +183,13 @@ namespace rcp {
               , parameter(param)
             {}
 
+            void writeMandatory(Writer& out) {
+                out.write(static_cast<char>(datatype));
+            }
+
             void write(Writer& out, bool all) {
 
-                out.write(static_cast<char>(datatype));
+                writeMandatory(out);
 
                 if (hasDefaultValue) {
 

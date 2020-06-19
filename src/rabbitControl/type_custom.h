@@ -70,12 +70,16 @@ namespace rcp {
 
         //------------------------------------
         // implement writeable
-        void write(Writer& out, bool all) {
+        virtual void write(Writer& out, bool all) {
 
             obj->write(out, all);
 
             // terminator
             out.write(static_cast<char>(TERMINATOR));
+        }
+
+        virtual void writeMandatory(Writer& out) const {
+            obj->writeMandatory(out);
         }
 
         //------------------------------------
@@ -101,7 +105,8 @@ namespace rcp {
                     T def = readFromStream(is, def);
                     CHECK_STREAM
 
-                    setDefault(def);
+                    obj->hasDefaultValue = true;
+                    obj->defaultValue = def;
                     break;
                 }
                 case CUSTOMTYPE_OPTIONS_UUID: {
@@ -110,7 +115,8 @@ namespace rcp {
                     is.get(uuid, 16);
                     CHECK_STREAM
 
-                    setUuid(uuid, 16);
+                    obj->hasUuid = true;
+                    memcpy(obj->uuid, uuid, 16);
                     break;
                 }
                 case CUSTOMTYPE_OPTIONS_CONFIG: {
@@ -130,6 +136,12 @@ namespace rcp {
                 }
                 }
             }
+        }
+
+        virtual bool anyOptionChanged() const {
+            return obj->defaultValueChanged
+                    || obj->uuidChanged
+                    || obj->configChanged;
         }
 
 
@@ -254,10 +266,14 @@ namespace rcp {
                 memset(uuid, 0, 16);
             }
 
-            void write(Writer& out, bool all) {
-
+            void writeMandatory(Writer& out) {
                 out.write(static_cast<char>(datatype));
                 out.write(static_cast<int32_t>(sizeof(T)));
+            }
+
+            void write(Writer& out, bool all) {
+
+                writeMandatory(out);
 
                 // write default value
                 if (hasDefaultValue) {

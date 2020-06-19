@@ -122,16 +122,29 @@ namespace rcp {
         virtual void update(const ParameterPtr& other) = 0;
         virtual ParameterPtr newReference() = 0;
 
+        // update callbacks
+        virtual const std::function< void() >& addUpdatedCb(std::function< void() >& func) = 0;
+        virtual const std::function< void() >& addUpdatedCb(std::function< void() >&& func) = 0;
+        virtual void removeUpdatedCb(const std::function< void() >& func) = 0;
+        virtual void clearUpdatedCb() = 0;
+
         //
         virtual void dump() = 0;
         virtual void dispose() = 0;
 
+        //
+        virtual bool isValueParameter() = 0;
+
         template<typename, datatype_t, td_types> friend class TypeDefinition;
         friend class GroupParameter;
         friend class ParameterManager;
+        friend class ParameterParser;
+        friend class ParameterClient;
+        friend class ParameterServer;
 
     protected:
         virtual void setDirty() = 0;
+        virtual bool onlyValueChanged() const { return false; }
 
     private:
         virtual void setParent(GroupParameter& parent) = 0;
@@ -155,6 +168,11 @@ namespace rcp {
         virtual void setValue(const T& value) = 0;
         virtual bool hasValue() const = 0;
         virtual void clearValue() = 0;
+
+        // update callbacks
+        virtual const std::function< void ( T& )>& addValueUpdatedCb(std::function< void(T&) >& func) = 0;
+        virtual void removeValueUpdatedCb(const std::function< void(T&) >& func) = 0;
+        virtual void clearValueUpdatedCb() = 0;
     };   
 
     class IElementParameter

@@ -113,7 +113,6 @@ namespace rcp {
 
             // terminator
             out.write(static_cast<char>(TERMINATOR));
-
         }
 
         void writeOptions(Writer& out, bool all) {
@@ -160,9 +159,10 @@ namespace rcp {
                         CHECK_STREAM
 
                         if (code_str == language_string_any) {
-                            setLabel(label);
+                            obj->hasLabel = true;
+                            obj->label = label;
                         } else {
-                            setLanguageLabel(code_str, label);
+                            obj->languageLabel[code_str] = label;
                         }
 
                         // peek next byte
@@ -195,9 +195,10 @@ namespace rcp {
                         CHECK_STREAM
 
                         if (code_str == language_string_any) {
-                            setDescription(description);
+                            obj->hasDescription = true;
+                            obj->description = description;
                         } else {
-                            setDescriptionLanguage(code_str, description);
+                            obj->languageDescription[code_str] = description;
                         }
 
                         // peek next byte
@@ -213,7 +214,8 @@ namespace rcp {
                     std::string st = readTinyString(is);
                     CHECK_STREAM
 
-                    setTags(st);
+                    obj->hasTags = true;
+                    obj->tags = st;
                     break;
                 }
                 case PARAMETER_OPTIONS_ORDER: {
@@ -221,7 +223,8 @@ namespace rcp {
                     int32_t val = readFromStream(is, obj->order);
                     CHECK_STREAM
 
-                    setOrder(val);
+                    obj->hasOrder = true;
+                    obj->order = val;
                     break;
                 }
                 case PARAMETER_OPTIONS_PARENTID: {
@@ -235,9 +238,23 @@ namespace rcp {
                             // parsed parameter is is a proxy parameter
                             // _not_ set as child of parent!
                             // proxy-parameter is either updating exisitng parameter in cache
-                            // or is added. if the proxy-parameter is added it gets added to the parent too
-                            setParent(std::dynamic_pointer_cast<GroupParameter>(parent));
+                            // or is added. if the proxy-parameter is added it gets added to the parent too                            
+                            if (auto p = obj->parent.lock()) {
+                                if (parent->getId() == p->getId()) {
+                                    // parent already set
+                                    return;
+                                } else {
+                                    // remove from parent...
+                                    p->removeChild(*this);
+                                }
+                            }
+
+                            obj->parent = std::dynamic_pointer_cast<GroupParameter>(parent);
                         }
+                    }
+                    else
+                    {
+                        // TODO: parent does not exist - put it into list, look it up later??
                     }
 
                     break;
@@ -247,15 +264,20 @@ namespace rcp {
                     // TODO: handle this
                     break;
                 case PARAMETER_OPTIONS_USERDATA:
-                    // TODO: handle this
+                {
+                    std::uint32_t size = readFromStream(is, size);
+                    std::vector<char> data;
+                    obj->userdata.resize(size);
+                    is.read(obj->userdata.data(), size);
                     break;
-
+                }
                 case PARAMETER_OPTIONS_USERID: {
 
                     std::string st = readTinyString(is);
                     CHECK_STREAM
 
-                    setUserid(st);
+                    obj->hasUserid = true;
+                    obj->userid = st;
                     break;
                 }
 
@@ -264,7 +286,8 @@ namespace rcp {
                     bool ro = readFromStream(is, ro);
                     CHECK_STREAM
 
-                    setReadonly(ro);
+                    obj->hasReadonly = true;
+                    obj->readonly = ro;
                     break;
                 }
 
@@ -284,6 +307,8 @@ namespace rcp {
 
         //------------------------------------
         // implement IParameter
+        virtual bool isValueParameter() { return false; }
+
         virtual int16_t getId() const { return obj->parameter_id; }
         virtual ITypeDefinition& getTypeDefinition() const { return obj->typeDefinition; }
 
@@ -512,13 +537,13 @@ namespace rcp {
             obj->readonly = readonly;
             obj->readonlyChanged = true;
             setDirty();
-        };
+        }
         virtual bool hasReadonly() const { return obj->hasReadonly; };
         virtual void clearReadonly() {
             obj->hasReadonly = false;
             obj->readonlyChanged = true;
             setDirty();
-        };
+        }
 
         //----------------------
         //
@@ -590,6 +615,17 @@ namespace rcp {
             }
         }
 
+        bool anyOptionChanged() const {
+            return obj->labelChanged
+                    || obj->descriptionChanged
+                    || obj->tagsChanged
+                    || obj->orderChanged
+                    || obj->parentChanged
+                    || obj->userdataChanged
+                    || obj->useridChanged
+                    || obj->readonlyChanged;
+        }
+
     private:
 
         virtual void setParent(GroupParameter& parent);
@@ -601,8 +637,7 @@ namespace rcp {
         }
 
         virtual void setManager(std::shared_ptr<IParameterManager> manager) {
-            obj->parameterManager = manager;
-            setDirty();
+            obj->parameterManager = manager;            
         }
 
         class UpdateEventHolder {
@@ -953,14 +988,16 @@ namespace rcp {
             Parameter<TD>(id)
           , obj(std::make_shared<Value>())
         {
-            setValue(init);
+            obj->hasValue = true;
+            obj->value = init;
         }
 
         ValueParameter(int16_t id, const T& init) :
             Parameter<TD>(id)
           , obj(std::make_shared<Value>())
         {
-            setValue(init);
+            obj->hasValue = true;
+            obj->value = init;
         }
 
         ~ValueParameter()
@@ -975,15 +1012,26 @@ namespace rcp {
         // implement writeable
         virtual void write(Writer& out, bool all) {
 
-            out.write(Parameter<TD>::getId());
-            getDefaultTypeDefinition().write(out, all);
+            if (onlyValueChanged())
+            {
+                // write updatevalue data
+                out.write(Parameter<TD>::getId());
+                getTypeDefinition().writeMandatory(out);
+                obj->writeValue(out);
+            }
+            else
+            {
+                out.write(Parameter<TD>::getId());
+                getDefaultTypeDefinition().write(out, all);
 
-            obj->write(out, all);
+                obj->write(out, all);
 
-            Parameter<TD>::writeOptions(out, all);
+                Parameter<TD>::writeOptions(out, all);
 
-            // terminator
-            out.write(static_cast<char>(TERMINATOR));
+                // terminator
+                out.write(static_cast<char>(TERMINATOR));
+            }
+
         }
 
         virtual void dump() {
@@ -994,6 +1042,9 @@ namespace rcp {
             }
         }
 
+        // iparameter
+        bool isValueParameter() { return true; }
+
         virtual bool handleOption(const parameter_options_t& opt, std::istream& is) {
 
             if (opt == PARAMETER_OPTIONS_VALUE) {
@@ -1002,7 +1053,8 @@ namespace rcp {
                 T val = getDefaultTypeDefinition().readValue(is);
                 CHECK_STREAM_RETURN(false)
 
-                setValue(val);
+                obj->hasValue = true;
+                obj->value = val;
                 return true;
             }
 
@@ -1010,13 +1062,13 @@ namespace rcp {
             return false;
         }
 
+
         // implement IValueParameter
         const T& getValue() const { return obj->value; }
         void setValue(const T& value) {
 
             obj->hasValue = true;
 
-            // todo: compare??
             if (obj->value == value) {
                 return;
             }
@@ -1157,18 +1209,17 @@ namespace rcp {
             }
 
             // update value
-            bool updated = false;
-
             auto v_other = std::dynamic_pointer_cast<ValueParameter<T, TD, type_id> >(other);
-            if (v_other) {
-                if (v_other->hasValue()) {
+            if (v_other)
+            {
+                if (v_other->hasValue())
+                {
                     setValue(v_other->getValue());
-                    updated = true;
+                    if (obj->valueChanged)
+                    {
+                        obj->callValueUpdatedCb();
+                    }
                 }
-            }
-
-            if (updated) {
-                obj->callValueUpdatedCb();
             }
 
             // update base
@@ -1176,7 +1227,7 @@ namespace rcp {
         }
 
 
-        const std::function< void ( T& )>& addValueUpdatedCb(std::function< void(T&) >& func) {
+        virtual const std::function< void ( T& )>& addValueUpdatedCb(std::function< void(T&) >& func) {
 
             for(auto& f : obj->valueUpdatedCallbacks) {
                 if (&func == &f->callback) {
@@ -1190,7 +1241,7 @@ namespace rcp {
             return obj->valueUpdatedCallbacks.back()->callback;
         }
 
-        const std::function< void(T&) >& addValueUpdatedCb(std::function< void(T&) >&& func) {
+        virtual const std::function< void(T&) >& addValueUpdatedCb(std::function< void(T&) >&& func) {
 
             for(auto& f : obj->valueUpdatedCallbacks) {
                 if (&func == &f->callback) {
@@ -1204,7 +1255,7 @@ namespace rcp {
             return obj->valueUpdatedCallbacks.back()->callback;
         }
 
-        void removeValueUpdatedCb(const std::function< void(T&) >& func) {
+        virtual void removeValueUpdatedCb(const std::function< void(T&) >& func) {
 
             for(auto it = obj->valueUpdatedCallbacks.begin(); it != obj->valueUpdatedCallbacks.end(); it++ ) {
 
@@ -1215,7 +1266,7 @@ namespace rcp {
             }
         }
 
-        void clearValueUpdatedCb() {
+        virtual void clearValueUpdatedCb() {
             obj->valueUpdatedCallbacks.clear();
         }
 
@@ -1228,6 +1279,12 @@ namespace rcp {
 
     protected:
         using Parameter<TD>::setDirty;
+
+        virtual bool onlyValueChanged() const {
+            return !Parameter<TD>::anyOptionChanged()
+                    && !getTypeDefinition().anyOptionChanged()
+                    && obj->valueChanged;
+        }
 
     private:
 
@@ -1264,11 +1321,13 @@ namespace rcp {
                 } else if (valueChanged) {
                     out.write(static_cast<char>(PARAMETER_OPTIONS_VALUE));
 
-                    T v{};
-                    out.write(v);
-
-                    valueChanged = false;
+                    writeValue(out);
                 }
+            }
+
+            void writeValue(Writer& out) {
+                out.write(value);
+                valueChanged = false;
             }
 
             void callValueUpdatedCb() {
@@ -1391,38 +1450,43 @@ namespace rcp {
 
         if (other->hasLabel()) {
             setLabel(other->getLabel());
-            updated = true;
+            updated = obj->labelChanged;
         }
 
         if (other->hasDescription()) {
-            setDescription(other->getDescription());
-            updated = true;
+            setDescription(other->getDescription());            
+            if (!updated) updated = obj->descriptionChanged;
         }
 
         if (other->hasTags()) {
             setTags(other->getTags());
-            updated = true;
+            if (!updated) updated = obj->tagsChanged;
         }
 
         if (other->hasOrder()) {
             setOrder(other->getOrder());
-            updated = true;
+            if (!updated) updated = obj->orderChanged;
         }
 
         if (other->hasParent()) {
             std::shared_ptr<GroupParameter> p = other->getParent().lock();
             p->addChild(*this);
-            updated = true;
+            if (!updated) updated = obj->parentChanged;
         }
 
         if (other->hasUserdata()) {
             setUserdata(other->getUserdata());
-            updated = true;
+            if (!updated) updated = obj->userdataChanged;
         }
 
         if (other->hasUserid()) {
             setUserid(other->getUserid());
-            updated = true;
+            if (!updated) updated = obj->useridChanged;
+        }
+
+        if (other->hasReadonly()) {
+            setReadonly(other->getReadonly());
+            if (!updated) updated = obj->readonlyChanged;
         }
 
         if (updated) {

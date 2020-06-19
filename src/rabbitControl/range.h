@@ -86,8 +86,8 @@ namespace rcp {
         }
 
     private:
-        T m_value1{};
-        T m_value2{};
+        T m_value1{0};
+        T m_value2{0};
     };
 
 }

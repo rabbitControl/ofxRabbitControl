@@ -49,9 +49,17 @@ namespace rcp {
         virtual void disconnected();
         virtual void received(std::istream& data);
 
+        void setApplicationId(const std::string& appid) {
+            m_applicationId = appid;
+        }
+        std::string getApplicationId() {
+            return m_applicationId;
+        }
+
     private:
         void _update(Packet& packet);
         void _remove(Packet& packet);
+        void _version(Packet& packet);
 
         std::shared_ptr<ParameterManager> m_parameterManager;
         ClientTransporter& m_transporter;
@@ -62,8 +70,7 @@ namespace rcp {
 //        onError(Exception ex);
 //        statusChanged(Status status, String message);
 
-        std::string m_serverVersion;
-        std::string m_serverApplicationId;
+        std::string m_applicationId;
     };
 
 }

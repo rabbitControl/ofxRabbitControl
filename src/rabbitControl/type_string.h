@@ -77,6 +77,10 @@ namespace rcp {
             out.write(static_cast<char>(TERMINATOR));
         }
 
+        virtual void writeMandatory(Writer& out) const {
+            obj->writeMandatory(out);
+        }
+
         //------------------------------------
         // implement optionparser
         void parseOptions(std::istream& is) {
@@ -100,7 +104,8 @@ namespace rcp {
                     std::string d = readFromStream(is, d);
                     CHECK_STREAM
 
-                    setDefault(d);
+                    obj->hasDefaultValue = true;
+                    obj->defaultValue = d;
                     break;
                 }
                 case STRING_OPTIONS_REGULAR_EXPRESSION: {
@@ -108,11 +113,17 @@ namespace rcp {
                     std::string d = readFromStream(is, d);
                     CHECK_STREAM
 
-                    setRegex(d);
+                    obj->hasRegex = true;
+                    obj->regex = d;
                     break;
                 }
                 }
             }
+        }
+
+        virtual bool anyOptionChanged() const {
+            return obj->defaultValueChanged
+                    || obj->regexChanged;
         }
 
         virtual std::string readValue(std::istream& is) {
@@ -202,9 +213,13 @@ namespace rcp {
               , parameter(param)
             {}
 
+            void writeMandatory(Writer& out) {
+                out.write(static_cast<char>(datatype));
+            }
+
             void write(Writer& out, bool all) {
 
-                out.write(static_cast<char>(datatype));
+                writeMandatory(out);
 
                 // write default value
                 if (hasDefaultValue) {
@@ -249,12 +264,12 @@ namespace rcp {
             datatype_t datatype;
 
             // options - base
-            std::string defaultValue{};
+            std::string defaultValue{""};
             bool hasDefaultValue;
             bool defaultValueChanged;
 
             // options - regex
-            std::string regex{};
+            std::string regex{""};
             bool hasRegex;
             bool regexChanged;
 

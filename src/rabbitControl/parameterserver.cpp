@@ -175,7 +175,15 @@ namespace rcp {
         // send updates
         for (auto& p : parameterManager->dirtyParameter) {
 
-            Packet packet(COMMAND_UPDATE, p.second);
+            // TODO send COMMAND_UPDATEVALUE
+            command_t cmd = COMMAND_UPDATE;
+
+            if (p.second->onlyValueChanged())
+            {
+                cmd = COMMAND_UPDATEVALUE;
+            }
+
+            Packet packet(cmd, p.second);
             sendPacket(packet);
         }
         parameterManager->dirtyParameter.clear();
@@ -234,18 +242,23 @@ namespace rcp {
 
         // assume this is a parameter!!
         ParameterPtr param = std::dynamic_pointer_cast<IParameter>(packet.getData());
-        if (param) {
-
+        if (param)
+        {
             ParameterPtr chached_param = parameterManager->getParameter(param->getId());
-            if (ParameterManager::isValid(chached_param)) {
+
+            if (ParameterManager::isValid(chached_param))
+            {
                 // got it... update it
                 chached_param->update(param);
 
                 // call updateParameter callbacks
+            }
+            else
+            {
+                // nope - we don't add parameter on a server
 
-            } else {
                 // parameter not in cache, add it
-                parameterManager->_addParameter(param);
+//                parameterManager->_addParameter(param);
 
                 // call addParameter callbacks
             }

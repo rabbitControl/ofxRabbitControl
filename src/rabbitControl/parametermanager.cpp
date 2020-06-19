@@ -45,17 +45,6 @@ namespace rcp {
         ids.clear();
     }
 
-
-    // parameter management
-    void ParameterManager::addParameter(IParameter& parameter, GroupParameterPtr& group) {
-
-        if (!isValid(parameter)) return;
-
-        ParameterPtr p = parameter.newReference();
-
-        _addParameter(p, group);
-    }
-
     void ParameterManager::removeParameter(IParameter& parameter) {
         removeParameter(parameter.getId());
     }
@@ -84,7 +73,7 @@ namespace rcp {
         if (id_it != ids.end()) {
             ids.erase(id_it);
         } else {
-            std::cerr << "could not find id in id list\n";
+            std::cerr << "ParameterManager::removeParameterDirect - could not find id in id list\n";
         }
 
         if (auto p = parameter->getParent().lock()) {
@@ -276,6 +265,7 @@ namespace rcp {
     }
 
 
+
     ParameterPtr ParameterManager::getParameter(const short& id) {
 
         // erase from available ids
@@ -284,7 +274,6 @@ namespace rcp {
             return it->second;
         }
 
-        std::cerr << "could not find id in id list\n";
         return std::make_shared<InvalidParameter>(0);
     }
 
@@ -307,6 +296,11 @@ namespace rcp {
     }
 
 
+    /**
+     * @brief ParameterManager::_addParameter
+     *      called by client
+     * @param parameter
+     */
     void ParameterManager::_addParameter(ParameterPtr& parameter) {
 
         // check if already in map
@@ -319,7 +313,7 @@ namespace rcp {
         // need to reserve id
         if (std::find(ids.begin(), ids.end(), parameter->getId()) != ids.end()) {
             // huh - parameter is not in parameter cache, but id already taken!?
-            std::cout << "consistency in id/parameter list\n";
+            std::cerr << "inconsistency in id/parameter list\n";
         }
 
         // in any case: reserve that id
@@ -327,6 +321,7 @@ namespace rcp {
 
         // add it
         parameter->setManager(getShared());
+        // called from client - parameter are clean by default
 
         // parsed parameters are proxy parameter until they are in params-map
         // proxy parameter are not set as children...
@@ -338,6 +333,12 @@ namespace rcp {
         params[parameter->getId()] = parameter;
     }
 
+    /**
+     * @brief ParameterManager::_addParameter
+     *      called by client
+     * @param parameter
+     * @param group
+     */
     void ParameterManager::_addParameter(ParameterPtr& parameter, GroupParameterPtr& group) {
 
         auto it = params.find(parameter->getId());
@@ -359,10 +360,22 @@ namespace rcp {
         group->addChild(parameter);
     }
 
+    /**
+     * @brief ParameterManager::_addParameterDirect
+     *          called by server - parameter expose
+     * @param label
+     * @param parameter
+     * @param group
+     */
     void ParameterManager::_addParameterDirect(const std::string& label, ParameterPtr& parameter, GroupParameterPtr& group) {
 
-        parameter->setManager(getShared());
+        parameter->setManager(getShared());        
         parameter->setLabel(label);
+
+        // called on server - parameters are dirty by default
+        // (so we send it out...)
+        // TODO: is this needed? - INITIALIZE would force writing a parameter anyways...
+        parameter->setDirty();
 
         // add to group
         group->addChild(parameter);

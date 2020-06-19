@@ -57,12 +57,16 @@ namespace rcp {
 
         //------------------------------------
         // implement writeable
-        void write(Writer& out, bool all) {
+        virtual void write(Writer& out, bool all) {
 
-            out.write(static_cast<char>(datatype));
+            writeMandatory(out);
 
             // terminator
             out.write(static_cast<char>(TERMINATOR));
+        }
+
+        virtual void writeMandatory(Writer& out) const {
+            out.write(static_cast<char>(datatype));
         }
 
         //------------------------------------
@@ -76,6 +80,10 @@ namespace rcp {
             if (did != TERMINATOR) {
                 std::cerr << "error - no-option typedefinition has no terminator!";
             }
+        }
+
+        virtual bool anyOptionChanged() const {
+            return false;
         }
 
         virtual void dump() {

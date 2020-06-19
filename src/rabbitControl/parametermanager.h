@@ -74,12 +74,10 @@ public:
 
 
     //
-    void addParameter(IParameter& parameter, GroupParameterPtr& group);
     void removeParameter(IParameter& parameter);
     void removeParameter(short id);
 
     //
-
     BooleanParameter& createBooleanParameter(const std::string& label, GroupParameterPtr& group);
     Int8Parameter& createInt8Parameter(const std::string& label, GroupParameterPtr& group);
     Int16Parameter& createInt16Parameter(const std::string& label, GroupParameterPtr& group);

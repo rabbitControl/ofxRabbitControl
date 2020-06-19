@@ -79,6 +79,11 @@ namespace rcp {
             out.write(static_cast<char>(TERMINATOR));
         }
 
+        virtual void writeMandatory(Writer& out) const {
+            out.write(static_cast<char>(obj->datatype));
+            obj->element_type.writeMandatory(out);
+        }
+
 
         //------------------------------------
         // implement optionparser
@@ -110,12 +115,18 @@ namespace rcp {
                     ElementType v2 = readFromStream(is, v2);
                     CHECK_STREAM
 
-                    setDefault(Range<ElementType>(v1, v2));
+                    obj->hasDefaultValue = true;
+                    obj->defaultValue = Range<ElementType>(v1, v2);
                     break;
                 }
 
             }
         } // parseOptions
+
+        virtual bool anyOptionChanged() const {
+            return obj->element_type.anyOptionChanged()
+                    || obj->defaultValueChanged;
+        }
 
 
         virtual Range<ElementType> readValue(std::istream& is) {

@@ -68,6 +68,12 @@ namespace rcp {
         }
 
     protected:
+        void _received(std::istream& in, void* client) {
+            for (const auto& kv : receive_cb) {
+                (kv.first->*kv.second)(in, *this, client);
+            }
+        }
+
         std::map<ServerTransporterReceiver*, void(ServerTransporterReceiver::*)(std::istream&, ServerTransporter&, void*)> receive_cb;
     };
 }

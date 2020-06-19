@@ -70,12 +70,6 @@ public:
     }
 
     //
-    void addParameter(IParameter& parameter) {
-        parameterManager->addParameter(parameter, root);
-    }
-    void addParameter(IParameter& parameter, GroupParameterPtr& group) {
-        parameterManager->addParameter(parameter, group);
-    }
     void removeParameter(IParameter& parameter) {
         parameterManager->removeParameter(parameter);
     }
