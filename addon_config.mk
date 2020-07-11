@@ -3,7 +3,7 @@ meta:
     ADDON_DESCRIPTION = addon for RabbitControl
     ADDON_AUTHOR = Ingo Randolf
     ADDON_TAGS = "Utilities"
-    ADDON_URL = https://github.com/rabbitControl/
+    ADDON_URL = https://github.com/rabbitControl/ofxRabbitControl
 
 # using boot asio, interprocess v 1.72.0
 
