@@ -89,7 +89,10 @@ public:
     {
         // set log level
         m_server.clear_access_channels(websocketpp::log::alevel::all);
-//        echo_server.set_access_channels(websocketpp::log::alevel::frame_payload);
+//        m_server.set_access_channels(websocketpp::log::alevel::frame_payload);
+//        m_server.set_access_channels(websocketpp::log::alevel::connect);
+//        m_server.set_access_channels(websocketpp::log::alevel::disconnect);
+//        m_server.set_access_channels(websocketpp::log::alevel::app);
 
         // Initialize Asio Transport
         m_server.init_asio();
