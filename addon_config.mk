@@ -5,6 +5,8 @@ meta:
     ADDON_TAGS = "Utilities"
     ADDON_URL = https://github.com/rabbitControl/
 
+# using boot asio, interprocess v 1.72.0
+
 common:
 	# dependencies with other addons, a list of them separated by spaces
 	# or use += in several lines
