@@ -65,8 +65,6 @@ namespace rcp {
             obj(std::make_shared<Value>(d, param))
         {}
 
-        ~TypeDefinition();
-
         //------------------------------------
         // implement ITypeDefinition
         virtual datatype_t getDatatype() const { return obj->datatype; }

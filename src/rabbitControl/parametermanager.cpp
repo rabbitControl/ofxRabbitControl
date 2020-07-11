@@ -409,4 +409,12 @@ namespace rcp {
 
         removedParameter[parameter->getId()] = parameter;
     }
+
+    void ParameterManager::clear()
+    {
+        ids.clear();
+        params.clear();
+        dirtyParameter.clear();
+        removedParameter.clear();
+    }
 }

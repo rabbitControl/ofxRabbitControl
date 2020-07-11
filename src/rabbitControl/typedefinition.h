@@ -48,7 +48,6 @@ namespace rcp {
     class ITypeDefinition : public virtual Writeable, public IOptionparser
     {
     public:
-        virtual ~ITypeDefinition();
         virtual datatype_t getDatatype() const = 0;
         virtual void dump() = 0;
         virtual void writeMandatory(Writer& out) const = 0;

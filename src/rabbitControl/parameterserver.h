@@ -51,6 +51,7 @@ public:
     ~ParameterServer();
 
     void dispose();
+    void clear();
 
     bool addTransporter(ServerTransporter& transporter);
     bool removeTransporter(ServerTransporter& transporter);

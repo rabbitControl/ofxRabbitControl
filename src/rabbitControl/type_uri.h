@@ -68,8 +68,6 @@ namespace rcp {
             obj(std::make_shared<Value>(d, param))
         {}
 
-        ~TypeDefinition();
-
         //------------------------------------
         // implement ITypeDefinition
         virtual datatype_t getDatatype() const { return obj->datatype; }
@@ -185,6 +183,7 @@ namespace rcp {
                     std::string schemas_str = readTinyString(is);
                     CHECK_STREAM
 
+                    // ??
                     obj->schemas.clear();
                     std::stringstream strstr(schemas_str);
                     std::istream_iterator<std::string> begin(strstr);

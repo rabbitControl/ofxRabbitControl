@@ -63,6 +63,11 @@ namespace rcp {
 
     void ParameterServer::dispose() {
         // TODO
+        clear();
+    }
+
+    void ParameterServer::clear() {
+        parameterManager->clear();
     }
 
 

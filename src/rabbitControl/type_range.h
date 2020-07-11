@@ -66,9 +66,6 @@ namespace rcp {
             obj(std::make_shared<Value>(d, param))
         {}
 
-        ~TypeDefinition()
-        {}
-
         //------------------------------------
         // implement writeable
         void write(Writer& out, bool all) {

@@ -109,6 +109,7 @@ private:
     void _addParameter(ParameterPtr& parameter);
     void _addParameter(ParameterPtr& parameter, GroupParameterPtr& group);
     void _addParameterDirect(const std::string& label, ParameterPtr& parameter, GroupParameterPtr& group);
+    void clear();
 
     virtual void setParameterDirty(IParameter& parameter);
     virtual void setParameterRemoved(ParameterPtr& parameter);

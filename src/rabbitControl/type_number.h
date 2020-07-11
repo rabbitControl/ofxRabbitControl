@@ -71,9 +71,6 @@ namespace rcp {
             obj(std::make_shared<Value>(dv, min, max, param))
         {}
 
-        ~TypeDefinition()
-        {}
-
         //------------------------------------
         // implement writeable
         virtual void write(Writer& out, bool all) {

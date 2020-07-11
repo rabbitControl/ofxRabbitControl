@@ -41,12 +41,6 @@
 
 namespace rcp {
 
-    ITypeDefinition::~ITypeDefinition() {}
-
-    TypeDefinition<std::string, DATATYPE_ENUM, td_enum>::~TypeDefinition<std::string, DATATYPE_ENUM, td_enum>() {}
-    TypeDefinition<std::string, DATATYPE_STRING, td_string>::~TypeDefinition<std::string, DATATYPE_STRING, td_string>() {}
-    TypeDefinition<std::string, DATATYPE_URI, td_uri>::~TypeDefinition<std::string, DATATYPE_URI, td_uri>() {}
-
     template<typename T,
              datatype_t type_id,
              td_types t

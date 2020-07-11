@@ -66,9 +66,6 @@ namespace rcp {
             obj(std::make_shared<Value>(defaultValue, param))
         {}
 
-        ~TypeDefinition()
-        {}
-
         //------------------------------------
         // implement IDefaultDefinition<T>
         virtual datatype_t getDatatype() const { return obj->datatype; }

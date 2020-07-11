@@ -92,9 +92,9 @@ namespace rcp {
         initialize();
     }
 
-    void ParameterClient::disconnected() {
-
-        // TODO: erase all parameter!
+    void ParameterClient::disconnected()
+    {
+        m_parameterManager->clear();
     }
 
     void ParameterClient::received(std::istream& data) {

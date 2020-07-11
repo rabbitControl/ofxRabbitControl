@@ -594,6 +594,7 @@ namespace rcp {
         }
 
         virtual void dispose() {
+            clearUpdatedCb();
         }
 
         friend class ParameterManager;
@@ -1271,6 +1272,8 @@ namespace rcp {
         }
 
         virtual void dispose() {
+            clearValueUpdatedCb();
+            Parameter<TD>::dispose();
         }
 
         friend class ParameterManager;
