@@ -16,3 +16,6 @@ common:
 	# but if the addon or addon libraries need special search paths they can be
 	# specified here separated by spaces or one per line using +=
 	ADDON_INCLUDES += libs/
+
+	# prevent boost to be used header only
+	ADDON_DEFINES += BOOST_ASIO_SEPARATE_COMPILATION
