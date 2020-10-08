@@ -147,29 +147,37 @@ void ofxRabbitControlServer::remove(ofParameterGroup& group) {
 // bool
 //----------------------------------------------------
 //----------------------------------------------------
-rcp::BooleanParameter ofxRabbitControlServer::expose(ofParameter<bool> & param, const rcp::GroupParameterPtr& rabbitgroup)
+rcp::BooleanParameterPtr ofxRabbitControlServer::expose(ofParameter<bool> & param, const rcp::GroupParameterPtr& rabbitgroup)
 {
     auto it = paramIdMap.find((void*)&param.get());
-    if (it != paramIdMap.end()) {
+    if (it != paramIdMap.end())
+    {
         // already exposed
-        return *std::dynamic_pointer_cast<rcp::BooleanParameter>(ParameterServer::getParameter(it->second));
+        return std::dynamic_pointer_cast<rcp::BooleanParameter>(ParameterServer::getParameter(it->second));
     }
 
     // setup
-    rcp::BooleanParameter p(0);
-    if (rabbitgroup) {
+    rcp::BooleanParameterPtr p;
+
+    if (rabbitgroup)
+    {
         p = ParameterServer::createBooleanParameter(param.getName(), const_cast<rcp::GroupParameterPtr&>(rabbitgroup));
-    } else {
+    }
+    else
+    {
         p = ParameterServer::createBooleanParameter(param.getName());
     }
-    p.setValue(param.get());
 
-    p.addValueUpdatedCb([&](bool& v) {
+    p->setValue(param.get());
+
+    p->addValueUpdatedCb([&param](bool& v)
+    {
         param.set(v);
     });
 
-    p.addUpdatedCb([&]() {
-        param.setName(p.getLabel());
+    p->addUpdatedCb([&param, p]()
+    {
+        param.setName(p->getLabel());
     });
 
 
@@ -177,7 +185,7 @@ rcp::BooleanParameter ofxRabbitControlServer::expose(ofParameter<bool> & param, 
     param.addListener(this, &ofxRabbitControlServer::paramBoolChanged);
 
     // insert into maps
-    paramIdMap[(void*)&param.get()] = p.getId();
+    paramIdMap[(void*)&param.get()] = p->getId();
 
     return p;
 }
@@ -210,43 +218,52 @@ void ofxRabbitControlServer::paramBoolChanged(bool & value)
 // int8
 //----------------------------------------------------
 //----------------------------------------------------
-rcp::Int8Parameter ofxRabbitControlServer::expose(ofParameter<char> & param, const rcp::GroupParameterPtr& rabbitgroup) {
-
+rcp::Int8ParameterPtr ofxRabbitControlServer::expose(ofParameter<char> & param, const rcp::GroupParameterPtr& rabbitgroup)
+{
     auto it = paramIdMap.find((void*)&param.get());
-    if (it != paramIdMap.end()) {
+    if (it != paramIdMap.end())
+    {
         // already exposed
-        return *std::dynamic_pointer_cast<rcp::Int8Parameter>(ParameterServer::getParameter(it->second));
+        return std::dynamic_pointer_cast<rcp::Int8Parameter>(ParameterServer::getParameter(it->second));
     }
 
     // setup
-    rcp::Int8Parameter p(0);
-    if (rabbitgroup) {
-        p  = ParameterServer::createInt8Parameter(param.getName(), const_cast<rcp::GroupParameterPtr&>(rabbitgroup));
-    } else {
-        p  = ParameterServer::createInt8Parameter(param.getName());
-    }
-    p.setMinimum(param.getMin());
-    p.setMaximum(param.getMax());
-    p.setValue(param.get());
+    rcp::Int8ParameterPtr p;
 
-    p.addValueUpdatedCb([&](int8_t& v) {
+    if (rabbitgroup)
+    {
+        p = ParameterServer::createInt8Parameter(param.getName(), const_cast<rcp::GroupParameterPtr&>(rabbitgroup));
+    }
+    else
+    {
+        p = ParameterServer::createInt8Parameter(param.getName());
+    }
+
+    p->setMinimum(param.getMin());
+    p->setMaximum(param.getMax());
+    p->setValue(param.get());
+
+    p->addValueUpdatedCb([&param](int8_t& v)
+    {
         param.set(v);
     });
 
-    p.addUpdatedCb([&]() {
-        param.setName(p.getLabel());
+    p->addUpdatedCb([&param, p]()
+    {
+        param.setName(p->getLabel());
     });
 
     // set change listener to update rcp parameter
     param.addListener(this, &ofxRabbitControlServer::paramInt8Changed);
 
     // insert into maps
-    paramIdMap[(void*)&param.get()] = p.getId();
+    paramIdMap[(void*)&param.get()] = p->getId();
 
     return p;
 }
 
-void ofxRabbitControlServer::remove(ofParameter<char> & param){
+void ofxRabbitControlServer::remove(ofParameter<char> & param)
+{
     ofParameterRemove(param);
     param.removeListener(this, &ofxRabbitControlServer::paramInt8Changed);
 }
@@ -259,7 +276,8 @@ void ofxRabbitControlServer::paramInt8Changed(char & value)
     }
 
     auto param = std::dynamic_pointer_cast<rcp::Int8Parameter>(ParameterServer::getParameter(id));
-    if (param) {
+    if (param)
+    {
         param->setValue(value);
         // update
         ParameterServer::update();
@@ -272,43 +290,52 @@ void ofxRabbitControlServer::paramInt8Changed(char & value)
 // int32
 //----------------------------------------------------
 //----------------------------------------------------
-rcp::Int32Parameter ofxRabbitControlServer::expose(ofParameter<int> & param, const rcp::GroupParameterPtr& rabbitgroup)
+rcp::Int32ParameterPtr ofxRabbitControlServer::expose(ofParameter<int> & param, const rcp::GroupParameterPtr& rabbitgroup)
 {
     auto it = paramIdMap.find((void*)&param.get());
-    if (it != paramIdMap.end()) {
+    if (it != paramIdMap.end())
+    {
         // already exposed
-        return *std::dynamic_pointer_cast<rcp::Int32Parameter>(ParameterServer::getParameter(it->second));
+        return std::dynamic_pointer_cast<rcp::Int32Parameter>(ParameterServer::getParameter(it->second));
     }
 
     // setup
-    rcp::Int32Parameter p(0);
-    if (rabbitgroup) {
-        p  = ParameterServer::createInt32Parameter(param.getName(), const_cast<rcp::GroupParameterPtr&>(rabbitgroup));
-    } else {
-        p  = ParameterServer::createInt32Parameter(param.getName());
-    }
-    p.setMinimum(param.getMin());
-    p.setMaximum(param.getMax());
-    p.setValue(param.get());
+    rcp::Int32ParameterPtr p;
 
-    p.addValueUpdatedCb([&](int32_t& v) {
+    if (rabbitgroup)
+    {
+        p = ParameterServer::createInt32Parameter(param.getName(), const_cast<rcp::GroupParameterPtr&>(rabbitgroup));
+    }
+    else
+    {
+        p = ParameterServer::createInt32Parameter(param.getName());
+    }
+
+    p->setMinimum(param.getMin());
+    p->setMaximum(param.getMax());
+    p->setValue(param.get());
+
+    p->addValueUpdatedCb([&param](int32_t& v)
+    {
         param.set(v);
     });
 
-    p.addUpdatedCb([&]() {
-        param.setName(p.getLabel());
+    p->addUpdatedCb([&param, p]()
+    {
+        param.setName(p->getLabel());
     });
 
     // set change listener to update rcp parameter
     param.addListener(this, &ofxRabbitControlServer::paramInt32Changed);
 
     // insert into maps
-    paramIdMap[(void*)&param.get()] = p.getId();
+    paramIdMap[(void*)&param.get()] = p->getId();
 
     return p;
 }
 
-void ofxRabbitControlServer::remove(ofParameter<int> & param){
+void ofxRabbitControlServer::remove(ofParameter<int> & param)
+{
     ofParameterRemove(param);
     param.removeListener(this, &ofxRabbitControlServer::paramInt32Changed);
 }
@@ -335,45 +362,54 @@ void ofxRabbitControlServer::paramInt32Changed(int & value)
 // float
 //----------------------------------------------------
 //----------------------------------------------------
-rcp::Float32Parameter ofxRabbitControlServer::expose(ofParameter<float> & param, const rcp::GroupParameterPtr& rabbitgroup)
+rcp::Float32ParameterPtr ofxRabbitControlServer::expose(ofParameter<float> & param, const rcp::GroupParameterPtr& rabbitgroup)
 {
     auto it = paramIdMap.find((void*)&param.get());
-    if (it != paramIdMap.end()) {
+    if (it != paramIdMap.end())
+    {
         // already exposed
-        return *std::dynamic_pointer_cast<rcp::Float32Parameter>(ParameterServer::getParameter(it->second));
+        return std::dynamic_pointer_cast<rcp::Float32Parameter>(ParameterServer::getParameter(it->second));
     }
 
     // setup
-    rcp::Float32Parameter p(0);
-    if (rabbitgroup) {
-        p  = ParameterServer::createFloat32Parameter(param.getName(), const_cast<rcp::GroupParameterPtr&>(rabbitgroup));
-    } else {
-        p  = ParameterServer::createFloat32Parameter(param.getName());
+    rcp::Float32ParameterPtr p;
+
+    if (rabbitgroup)
+    {
+        p = ParameterServer::createFloat32Parameter(param.getName(), const_cast<rcp::GroupParameterPtr&>(rabbitgroup));
     }
-    p.setMinimum(param.getMin());
-    p.setMaximum(param.getMax());
-    p.setValue(param.get());
+    else
+    {
+        p = ParameterServer::createFloat32Parameter(param.getName());
+    }
 
-    p.getMinimum();
+    p->setMinimum(param.getMin());
+    p->setMaximum(param.getMax());
+    p->setValue(param.get());
 
-    p.addValueUpdatedCb([&](float& v) {
+    p->getMinimum();
+
+    p->addValueUpdatedCb([&param](float& v)
+    {
         param.set(v);
     });
 
-    p.addUpdatedCb([&]() {
-        param.setName(p.getLabel());
+    p->addUpdatedCb([&param, p]()
+    {
+        param.setName(p->getLabel());
     });
 
     // set change listener to update rcp parameter
     param.addListener(this, &ofxRabbitControlServer::paramfloatChanged);
 
     // insert into maps
-    paramIdMap[(void*)&param.get()] = p.getId();
+    paramIdMap[(void*)&param.get()] = p->getId();
 
     return p;
 }
 
-void ofxRabbitControlServer::remove(ofParameter<float> & param){
+void ofxRabbitControlServer::remove(ofParameter<float> & param)
+{
     ofParameterRemove(param);
     param.removeListener(this, &ofxRabbitControlServer::paramfloatChanged);
 }
@@ -399,43 +435,52 @@ void ofxRabbitControlServer::paramfloatChanged(float & value)
 // double
 //----------------------------------------------------
 //----------------------------------------------------
-rcp::Float64Parameter ofxRabbitControlServer::expose(ofParameter<double> & param, const rcp::GroupParameterPtr& rabbitgroup)
+rcp::Float64ParameterPtr ofxRabbitControlServer::expose(ofParameter<double> & param, const rcp::GroupParameterPtr& rabbitgroup)
 {
     auto it = paramIdMap.find((void*)&param.get());
-    if (it != paramIdMap.end()) {
+    if (it != paramIdMap.end())
+    {
         // already exposed
-        return *std::dynamic_pointer_cast<rcp::Float64Parameter>(ParameterServer::getParameter(it->second));
+        return std::dynamic_pointer_cast<rcp::Float64Parameter>(ParameterServer::getParameter(it->second));
     }
 
     // setup
-    rcp::Float64Parameter p(0);
-    if (rabbitgroup) {
-        p  = ParameterServer::createFloat64Parameter(param.getName(), const_cast<rcp::GroupParameterPtr&>(rabbitgroup));
-    } else {
-        p  = ParameterServer::createFloat64Parameter(param.getName());
-    }
-    p.setMinimum(param.getMin());
-    p.setMaximum(param.getMax());
-    p.setValue(param.get());
+    rcp::Float64ParameterPtr p;
 
-    p.addValueUpdatedCb([&](double& v) {
+    if (rabbitgroup)
+    {
+        p = ParameterServer::createFloat64Parameter(param.getName(), const_cast<rcp::GroupParameterPtr&>(rabbitgroup));
+    }
+    else
+    {
+        p = ParameterServer::createFloat64Parameter(param.getName());
+    }
+
+    p->setMinimum(param.getMin());
+    p->setMaximum(param.getMax());
+    p->setValue(param.get());
+
+    p->addValueUpdatedCb([&param](double& v)
+    {
         param.set(v);
     });
 
-    p.addUpdatedCb([&]() {
-        param.setName(p.getLabel());
+    p->addUpdatedCb([&param, p]()
+    {
+        param.setName(p->getLabel());
     });
 
     // set change listener to update rcp parameter
     param.addListener(this, &ofxRabbitControlServer::paramDoubleChanged);
 
     // insert into maps
-    paramIdMap[(void*)&param.get()] = p.getId();
+    paramIdMap[(void*)&param.get()] = p->getId();
 
     return p;
 }
 
-void ofxRabbitControlServer::remove(ofParameter<double> & param){
+void ofxRabbitControlServer::remove(ofParameter<double> & param)
+{
     ofParameterRemove(param);
     param.removeListener(this, &ofxRabbitControlServer::paramDoubleChanged);
 }
@@ -461,41 +506,50 @@ void ofxRabbitControlServer::paramDoubleChanged(double & value)
 // string
 //----------------------------------------------------
 //----------------------------------------------------
-rcp::StringParameter ofxRabbitControlServer::expose(ofParameter<std::string> & param, const rcp::GroupParameterPtr& rabbitgroup)
+rcp::StringParameterPtr ofxRabbitControlServer::expose(ofParameter<std::string> & param, const rcp::GroupParameterPtr& rabbitgroup)
 {
     auto it = paramIdMap.find((void*)&param.get());
-    if (it != paramIdMap.end()) {
+    if (it != paramIdMap.end())
+    {
         // already exposed
-        return *std::dynamic_pointer_cast<rcp::StringParameter>(ParameterServer::getParameter(it->second));
+        return std::dynamic_pointer_cast<rcp::StringParameter>(ParameterServer::getParameter(it->second));
     }
 
     // setup
-    rcp::StringParameter p(0);
-    if (rabbitgroup) {
+    rcp::StringParameterPtr p;
+
+    if (rabbitgroup)
+    {
         p = ParameterServer::createStringParameter(param.getName(), const_cast<rcp::GroupParameterPtr&>(rabbitgroup));
-    } else {
+    }
+    else
+    {
         p = ParameterServer::createStringParameter(param.getName());
     }
-    p.setValue(param.get());
 
-    p.addValueUpdatedCb([&](std::string& v) {
+    p->setValue(param.get());
+
+    p->addValueUpdatedCb([&param](std::string& v)
+    {
         param.set(v);
     });
 
-    p.addUpdatedCb([&]() {
-        param.setName(p.getLabel());
+    p->addUpdatedCb([&param, p]()
+    {
+        param.setName(p->getLabel());
     });
 
     // set change listener to update rcp parameter
     param.addListener(this, &ofxRabbitControlServer::paramStringChanged);
 
     // insert into maps
-    paramIdMap[(void*)&param.get()] = p.getId();
+    paramIdMap[(void*)&param.get()] = p->getId();
 
     return p;
 }
 
-void ofxRabbitControlServer::remove(ofParameter<std::string> & param){
+void ofxRabbitControlServer::remove(ofParameter<std::string> & param)
+{
     ofParameterRemove(param);
     param.removeListener(this, &ofxRabbitControlServer::paramStringChanged);
 }
@@ -522,27 +576,32 @@ void ofxRabbitControlServer::paramStringChanged(std::string & value)
 // color
 //----------------------------------------------------
 //----------------------------------------------------
-rcp::RGBAParameter ofxRabbitControlServer::expose(ofParameter<ofColor> & param, const rcp::GroupParameterPtr& rabbitgroup)
+rcp::RGBAParameterPtr ofxRabbitControlServer::expose(ofParameter<ofColor> & param, const rcp::GroupParameterPtr& rabbitgroup)
 {
     auto it = paramIdMap.find((void*)&param.get());
-    if (it != paramIdMap.end()) {
+    if (it != paramIdMap.end())
+    {
         // already exposed
-        return *std::dynamic_pointer_cast<rcp::RGBAParameter>(ParameterServer::getParameter(it->second));
+        return std::dynamic_pointer_cast<rcp::RGBAParameter>(ParameterServer::getParameter(it->second));
     }
 
     // setup
-    rcp::RGBAParameter p(0);
-    if (rabbitgroup) {
-        p  = ParameterServer::createRGBAParameter(param.getName(), const_cast<rcp::GroupParameterPtr&>(rabbitgroup));
-    } else {
-        p  = ParameterServer::createRGBAParameter(param.getName());
+    rcp::RGBAParameterPtr p;
+
+    if (rabbitgroup)
+    {
+        p = ParameterServer::createRGBAParameter(param.getName(), const_cast<rcp::GroupParameterPtr&>(rabbitgroup));
+    }
+    else
+    {
+        p = ParameterServer::createRGBAParameter(param.getName());
     }
 
     uint32_t cv = param.get().r + (param.get().g << 8) + (param.get().b << 16) + (param.get().a << 24);
-    p.setValue(rcp::Color(cv));
+    p->setValue(rcp::Color(cv));
 
-    p.addValueUpdatedCb([&](rcp::Color& v) {
-
+    p->addValueUpdatedCb([&param](rcp::Color& v)
+    {
         uint32_t cv = v.getValue();
         float r = cv & 0xFF;
         float g = (cv >> 8) & 0xFF;
@@ -552,20 +611,22 @@ rcp::RGBAParameter ofxRabbitControlServer::expose(ofParameter<ofColor> & param, 
         param.set(ofColor(r, g, b, a));
     });
 
-    p.addUpdatedCb([&]() {
-        param.setName(p.getLabel());
+    p->addUpdatedCb([&param, p]()
+    {
+        param.setName(p->getLabel());
     });
 
     // set change listener to update rcp parameter
     param.addListener(this, &ofxRabbitControlServer::paramColorChanged);
 
     // insert into maps
-    paramIdMap[(void*)&param.get()] = p.getId();
+    paramIdMap[(void*)&param.get()] = p->getId();
 
     return p;
 }
 
-void ofxRabbitControlServer::remove(ofParameter<ofColor> & param){
+void ofxRabbitControlServer::remove(ofParameter<ofColor> & param)
+{
     ofParameterRemove(param);
     param.removeListener(this, &ofxRabbitControlServer::paramColorChanged);
 }

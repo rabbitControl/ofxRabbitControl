@@ -97,105 +97,105 @@ namespace rcp {
     // parameter creation
     //--------------------------------------------
     //--------------------------------------------
-    BooleanParameter& ParameterManager::createBooleanParameter(const std::string& label, GroupParameterPtr& group) {
-
+    BooleanParameterPtr ParameterManager::createBooleanParameter(const std::string& label, GroupParameterPtr& group)
+    {
         short id = getNextId();
-        if (id != 0) {
-
-            std::shared_ptr<BooleanParameter > p = std::make_shared<BooleanParameter>(id);
+        if (id != 0)
+        {
+            BooleanParameterPtr p = std::make_shared<BooleanParameter>(id);
             _addParameterDirect(label, (ParameterPtr&)p, group);
 
-            return *p.get();
+            return p;
         }
 
         // ?? - yeah? or use some options here?
         throw std::runtime_error("no valid id...");
     }
 
-    Int8Parameter& ParameterManager::createInt8Parameter(const std::string& label, GroupParameterPtr& group) {
-
+    Int8ParameterPtr ParameterManager::createInt8Parameter(const std::string& label, GroupParameterPtr& group)
+    {
         short id = getNextId();
-        if (id != 0) {
-
-            std::shared_ptr<Int8Parameter > p = std::make_shared<Int8Parameter>(id);
+        if (id != 0)
+        {
+            Int8ParameterPtr p = std::make_shared<Int8Parameter>(id);
             _addParameterDirect(label, (ParameterPtr&)p, group);
 
-            return *p.get();
+            return p;
         }
 
         // ?? - yeah? or use some options here?
         throw std::runtime_error("no valid id...");
     }
 
-    Int16Parameter& ParameterManager::createInt16Parameter(const std::string& label, GroupParameterPtr& group) {
-
+    Int16ParameterPtr ParameterManager::createInt16Parameter(const std::string& label, GroupParameterPtr& group)
+    {
         short id = getNextId();
-        if (id != 0) {
-
-            std::shared_ptr<Int16Parameter > p = std::make_shared<Int16Parameter>(id);
+        if (id != 0)
+        {
+            Int16ParameterPtr p = std::make_shared<Int16Parameter>(id);
             _addParameterDirect(label, (ParameterPtr&)p, group);
 
-            return *p.get();
+            return p;
         }
 
         // ?? - yeah? or use some options here?
         throw std::runtime_error("no valid id...");
     }
 
-    Int32Parameter& ParameterManager::createInt32Parameter(const std::string& label, GroupParameterPtr& group) {
-
+    Int32ParameterPtr ParameterManager::createInt32Parameter(const std::string& label, GroupParameterPtr& group)
+    {
         short id = getNextId();
-        if (id != 0) {
-
-            std::shared_ptr<Int32Parameter > p = std::make_shared<Int32Parameter>(id);
+        if (id != 0)
+        {
+            Int32ParameterPtr p = std::make_shared<Int32Parameter>(id);
             _addParameterDirect(label, (ParameterPtr&)p, group);
 
-            return *p.get();
+            return p;
         }
 
         // ?? - yeah? or use some options here?
         throw std::runtime_error("no valid id...");
     }
 
-    Int64Parameter& ParameterManager::createInt64Parameter(const std::string& label, GroupParameterPtr& group) {
-
+    Int64ParameterPtr ParameterManager::createInt64Parameter(const std::string& label, GroupParameterPtr& group)
+    {
         short id = getNextId();
-        if (id != 0) {
-
-            std::shared_ptr<Int64Parameter > p = std::make_shared<Int64Parameter>(id);
+        if (id != 0)
+        {
+            Int64ParameterPtr p = std::make_shared<Int64Parameter>(id);
             _addParameterDirect(label, (ParameterPtr&)p, group);
 
-            return *p.get();
+            return p;
         }
 
         // ?? - yeah? or use some options here?
         throw std::runtime_error("no valid id...");
     }
 
-    Float32Parameter& ParameterManager::createFloat32Parameter(const std::string& label, GroupParameterPtr& group) {
-
+    Float32ParameterPtr ParameterManager::createFloat32Parameter(const std::string& label, GroupParameterPtr& group)
+    {
         short id = getNextId();
-        if (id != 0) {
-
-            std::shared_ptr<Float32Parameter > p = std::make_shared<Float32Parameter>(id);
+        if (id != 0)
+        {
+            Float32ParameterPtr p = std::make_shared<Float32Parameter>(id);
             _addParameterDirect(label, (ParameterPtr&)p, group);
 
-            return *p.get();
+            return p;
         }
 
         // ?? - yeah? or use some options here?
         throw std::runtime_error("no valid id...");
     }
 
-    Float64Parameter& ParameterManager::createFloat64Parameter(const std::string& label, GroupParameterPtr& group) {
-
+    Float64ParameterPtr ParameterManager::createFloat64Parameter(const std::string& label, GroupParameterPtr& group)
+    {
         short id = getNextId();
-        if (id != 0) {
-
-            std::shared_ptr<Float64Parameter > p = std::make_shared<Float64Parameter>(id);
+        if (id != 0)
+        {
+            Float64ParameterPtr p = std::make_shared<Float64Parameter>(id);
             _addParameterDirect(label, (ParameterPtr&)p, group);
 
-            return *p.get();
+            return p;
         }
 
         // ?? - yeah? or use some options here?
@@ -203,56 +203,56 @@ namespace rcp {
     }
 
 
-    StringParameter& ParameterManager::createStringParameter(const std::string& label, GroupParameterPtr& group) {
-
+    StringParameterPtr ParameterManager::createStringParameter(const std::string& label, GroupParameterPtr& group)
+    {
         short id = getNextId();
-        if (id != 0) {
-
-            std::shared_ptr<StringParameter > p = std::make_shared<StringParameter>(id);
+        if (id != 0)
+        {
+            StringParameterPtr p = std::make_shared<StringParameter>(id);
             _addParameterDirect(label, (ParameterPtr&)p, group);
 
-            return *p.get();
+            return p;
         }
 
         // ?? - yeah? or use some options here?
         throw std::runtime_error("no valid id...");
     }
 
-    RGBAParameter& ParameterManager::createRGBAParameter(const std::string& label, GroupParameterPtr& group) {
-
+    RGBAParameterPtr ParameterManager::createRGBAParameter(const std::string& label, GroupParameterPtr& group)
+    {
         short id = getNextId();
-        if (id != 0) {
-
-            std::shared_ptr<RGBAParameter > p = std::make_shared<RGBAParameter>(id);
+        if (id != 0)
+        {
+            RGBAParameterPtr p = std::make_shared<RGBAParameter>(id);
             _addParameterDirect(label, (ParameterPtr&)p, group);
 
-            return *p.get();
+            return p;
         }
 
         // ?? - yeah? or use some options here?
         throw std::runtime_error("no valid id...");
     }
 
-    BangParameter& ParameterManager::createBangParameter(const std::string& label, GroupParameterPtr& group) {
-
+    BangParameterPtr ParameterManager::createBangParameter(const std::string& label, GroupParameterPtr& group)
+    {
         short id = getNextId();
-        if (id != 0) {
-
-            std::shared_ptr<BangParameter > p = std::make_shared<BangParameter>(id);
+        if (id != 0)
+        {
+            BangParameterPtr p = std::make_shared<BangParameter>(id);
             _addParameterDirect(label, (ParameterPtr&)p, group);
 
-            return *p.get();
+            return p;
         }
 
         // ?? - yeah? or use some options here?
         throw std::runtime_error("no valid id...");
     }
 
-    GroupParameterPtr ParameterManager::createGroupParameter(const std::string& label, GroupParameterPtr& group) {
-
+    GroupParameterPtr ParameterManager::createGroupParameter(const std::string& label, GroupParameterPtr& group)
+    {
         short id = getNextId();
-        if (id != 0) {
-
+        if (id != 0)
+        {
             GroupParameterPtr p = std::make_shared<GroupParameter>(id);
             _addParameterDirect(label, (ParameterPtr&)p, group);
 
@@ -261,16 +261,16 @@ namespace rcp {
 
         // ?? - yeah? or use some options here?
         throw std::runtime_error("no valid id...");
-
     }
 
 
 
-    ParameterPtr ParameterManager::getParameter(const short& id) {
-
-        // erase from available ids
+    ParameterPtr ParameterManager::getParameter(const short& id)
+    {
         auto it = params.find(id);
-        if (it != params.end()) {
+
+        if (it != params.end())
+        {
             return it->second;
         }
 
@@ -281,10 +281,14 @@ namespace rcp {
 // private functions
 
 
-    short ParameterManager::getNextId() {
-        for(unsigned short i=1; i<USHRT_MAX; i++) {
+    short ParameterManager::getNextId()
+    {
+        for (unsigned short i=1; i<USHRT_MAX; i++)
+        {
             auto search = ids.find(static_cast<short>(i));
-            if(search == ids.end()) {
+
+            if (search == ids.end())
+            {
                 short i_s = static_cast<short>(i);
                 ids.insert(i_s);
                 return i_s;

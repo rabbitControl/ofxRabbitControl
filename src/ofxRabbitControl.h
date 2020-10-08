@@ -48,13 +48,13 @@ public:
     rcp::GroupParameterPtr expose(ofParameterGroup& group, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
     void remove(ofParameterGroup& group);
 
-    rcp::BooleanParameter expose(ofParameter<bool> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
-    rcp::Int8Parameter expose(ofParameter<char> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
-    rcp::Int32Parameter expose(ofParameter<int> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
-    rcp::Float32Parameter expose(ofParameter<float> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
-    rcp::Float64Parameter expose(ofParameter<double> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
-    rcp::StringParameter expose(ofParameter<std::string> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
-    rcp::RGBAParameter expose(ofParameter<ofColor> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
+    rcp::BooleanParameterPtr expose(ofParameter<bool> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
+    rcp::Int8ParameterPtr expose(ofParameter<char> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
+    rcp::Int32ParameterPtr expose(ofParameter<int> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
+    rcp::Float32ParameterPtr expose(ofParameter<float> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
+    rcp::Float64ParameterPtr expose(ofParameter<double> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
+    rcp::StringParameterPtr expose(ofParameter<std::string> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
+    rcp::RGBAParameterPtr expose(ofParameter<ofColor> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
 
     void remove(ofParameter<bool> & param);
     void remove(ofParameter<char> & param);

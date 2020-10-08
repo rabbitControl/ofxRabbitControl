@@ -78,19 +78,19 @@ public:
     void removeParameter(short id);
 
     //
-    BooleanParameter& createBooleanParameter(const std::string& label, GroupParameterPtr& group);
-    Int8Parameter& createInt8Parameter(const std::string& label, GroupParameterPtr& group);
-    Int16Parameter& createInt16Parameter(const std::string& label, GroupParameterPtr& group);
-    Int32Parameter& createInt32Parameter(const std::string& label, GroupParameterPtr& group);
-    Int64Parameter& createInt64Parameter(const std::string& label, GroupParameterPtr& group);
-    Float32Parameter& createFloat32Parameter(const std::string& label, GroupParameterPtr& group);
-    Float64Parameter& createFloat64Parameter(const std::string& label, GroupParameterPtr& group);
+    BooleanParameterPtr createBooleanParameter(const std::string& label, GroupParameterPtr& group);
+    Int8ParameterPtr createInt8Parameter(const std::string& label, GroupParameterPtr& group);
+    Int16ParameterPtr createInt16Parameter(const std::string& label, GroupParameterPtr& group);
+    Int32ParameterPtr createInt32Parameter(const std::string& label, GroupParameterPtr& group);
+    Int64ParameterPtr createInt64Parameter(const std::string& label, GroupParameterPtr& group);
+    Float32ParameterPtr createFloat32Parameter(const std::string& label, GroupParameterPtr& group);
+    Float64ParameterPtr createFloat64Parameter(const std::string& label, GroupParameterPtr& group);
 
-    StringParameter& createStringParameter(const std::string& label, GroupParameterPtr& group);
+    StringParameterPtr createStringParameter(const std::string& label, GroupParameterPtr& group);
 
-    RGBAParameter& createRGBAParameter(const std::string& label, GroupParameterPtr& group);
+    RGBAParameterPtr createRGBAParameter(const std::string& label, GroupParameterPtr& group);
 
-    BangParameter& createBangParameter(const std::string& label, GroupParameterPtr& group);
+    BangParameterPtr createBangParameter(const std::string& label, GroupParameterPtr& group);
 
     GroupParameterPtr createGroupParameter(const std::string& label, GroupParameterPtr& group);
 

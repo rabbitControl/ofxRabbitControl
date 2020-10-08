@@ -79,77 +79,77 @@ public:
     }
 
     // parameter creater
-    BooleanParameter& createBooleanParameter(const std::string& label) {
+    BooleanParameterPtr createBooleanParameter(const std::string& label) {
         return parameterManager->createBooleanParameter(label, root);
     }
-    BooleanParameter& createBooleanParameter(const std::string& label, GroupParameterPtr& group) {
+    BooleanParameterPtr createBooleanParameter(const std::string& label, GroupParameterPtr& group) {
         return parameterManager->createBooleanParameter(label, group);
     }
 
-    Int8Parameter& createInt8Parameter(const std::string& label) {
+    Int8ParameterPtr createInt8Parameter(const std::string& label) {
         return parameterManager->createInt8Parameter(label, root);
     }
-    Int8Parameter& createInt8Parameter(const std::string& label, GroupParameterPtr& group) {
+    Int8ParameterPtr createInt8Parameter(const std::string& label, GroupParameterPtr& group) {
         return parameterManager->createInt8Parameter(label, group);
     }
 
-    Int16Parameter& createInt16Parameter(const std::string& label) {
+    Int16ParameterPtr createInt16Parameter(const std::string& label) {
         return parameterManager->createInt16Parameter(label, root);
     }
-    Int16Parameter& createInt16Parameter(const std::string& label, GroupParameterPtr& group) {
+    Int16ParameterPtr createInt16Parameter(const std::string& label, GroupParameterPtr& group) {
         return parameterManager->createInt16Parameter(label, group);
     }
 
-    Int32Parameter& createInt32Parameter(const std::string& label) {
+    Int32ParameterPtr createInt32Parameter(const std::string& label) {
         return parameterManager->createInt32Parameter(label, root);
     }
-    Int32Parameter& createInt32Parameter(const std::string& label, GroupParameterPtr& group) {
+    Int32ParameterPtr createInt32Parameter(const std::string& label, GroupParameterPtr& group) {
         return parameterManager->createInt32Parameter(label, group);
     }
 
-    Int64Parameter& createInt64Parameter(const std::string& label) {
+    Int64ParameterPtr createInt64Parameter(const std::string& label) {
         return parameterManager->createInt64Parameter(label, root);
     }
-    Int64Parameter& createInt64Parameter(const std::string& label, GroupParameterPtr& group) {
+    Int64ParameterPtr createInt64Parameter(const std::string& label, GroupParameterPtr& group) {
         return parameterManager->createInt64Parameter(label, group);
     }
 
-    Float32Parameter& createFloat32Parameter(const std::string& label) {
+    Float32ParameterPtr createFloat32Parameter(const std::string& label) {
         return parameterManager->createFloat32Parameter(label, root);
     }
-    Float32Parameter& createFloat32Parameter(const std::string& label, GroupParameterPtr& group) {
+    Float32ParameterPtr createFloat32Parameter(const std::string& label, GroupParameterPtr& group) {
         return parameterManager->createFloat32Parameter(label, group);
     }
 
-    Float64Parameter& createFloat64Parameter(const std::string& label) {
+    Float64ParameterPtr createFloat64Parameter(const std::string& label) {
         return parameterManager->createFloat64Parameter(label, root);
     }
-    Float64Parameter& createFloat64Parameter(const std::string& label, GroupParameterPtr& group) {
+    Float64ParameterPtr createFloat64Parameter(const std::string& label, GroupParameterPtr& group) {
         return parameterManager->createFloat64Parameter(label, group);
     }
 
 
-    StringParameter& createStringParameter(const std::string& label) {
+    StringParameterPtr createStringParameter(const std::string& label) {
         return parameterManager->createStringParameter(label, root);
     }
-    StringParameter& createStringParameter(const std::string& label, GroupParameterPtr& group) {
+    StringParameterPtr createStringParameter(const std::string& label, GroupParameterPtr& group) {
         return parameterManager->createStringParameter(label, group);
     }
 
 
-    RGBAParameter& createRGBAParameter(const std::string& label) {
+    RGBAParameterPtr createRGBAParameter(const std::string& label) {
         return parameterManager->createRGBAParameter(label, root);
     }
-    RGBAParameter& createRGBAParameter(const std::string& label, GroupParameterPtr& group) {
+    RGBAParameterPtr createRGBAParameter(const std::string& label, GroupParameterPtr& group) {
         return parameterManager->createRGBAParameter(label, group);
     }
 
 
 
-    BangParameter& createBangParameter(const std::string& label) {
+    BangParameterPtr createBangParameter(const std::string& label) {
         return parameterManager->createBangParameter(label, root);
     }
-    BangParameter& createBangParameter(const std::string& label, GroupParameterPtr& group) {
+    BangParameterPtr createBangParameter(const std::string& label, GroupParameterPtr& group) {
         return parameterManager->createBangParameter(label, group);
     }
 
