@@ -73,120 +73,138 @@ namespace rcp {
             // handle update value
             if (packet_option.getValue().getCommand() == COMMAND_UPDATEVALUE) {
 
-                WriteablePtr param = ParameterParser::parseUpdateValue(is);
+                ParameterPtr param = ParameterParser::parseUpdateValue(is);
 
                 if (param != nullptr) {
                     packet_option.getValue().setData(param);
+                    return packet_option;
                 }
-
-                if (!is.eof()) {
-                    // should be eof
-                    // throw error?
+                else
+                {
+                    // empty packet... means fail...?
+                    return Option<Packet>();
                 }
-
-                return packet_option;
             }
 
 
             //------------------------------------
             // read options
-            while(!is.eof()) {
-
+            while(!is.eof())
+            {
                 // read option prefix
                 packet_options_t packet_prefix = static_cast<packet_options_t>(is.get());
 
-                if (packet_prefix == TERMINATOR) {
+                if (packet_prefix == TERMINATOR)
+                {
                     return packet_option;
                 }
 
-                if (is.eof() || is.fail()) {
-                    break;
+                if (is.eof()
+                        || is.fail())
+                {
+                    return Option<Packet>();
                 }
 
-                if (packet_prefix < PACKET_OPTIONS_TIMESTAMP || packet_prefix > PACKET_OPTIONS_DATA) {
+                if (packet_prefix < PACKET_OPTIONS_TIMESTAMP
+                        || packet_prefix > PACKET_OPTIONS_DATA)
+                {
                     std::cout << "error: unknown packet option: " << packet_prefix << "\n";
                     break;
                 }
 
-                switch (packet_prefix) {
+                switch (packet_prefix)
+                {
+                case PACKET_OPTIONS_TIMESTAMP:
+                {
+                    uint64_t v = readFromStream(is, v);
+                    CHECK_STREAM
 
-                    case PACKET_OPTIONS_TIMESTAMP: {
-
-                        uint64_t v = readFromStream(is, v);
-                        CHECK_STREAM
-
-                        packet_option.getValue().setTimestamp(v);
-                        break;
-                    }
+                    packet_option.getValue().setTimestamp(v);
+                    break;
+                }
                     // packet data
-                    case PACKET_OPTIONS_DATA:
+                case PACKET_OPTIONS_DATA:
 
-                        // already have data?
-                        if (packet_option.getValue().hasData()) {
-                            // error - data already set
-                            // throw exception here?
-                            break;
-                        }
+                    // already have data?
+                    if (packet_option.getValue().hasData())
+                    {
+                        // error - data already set
+                        // throw exception here?
+                        return Option<Packet>();
+                    }
 
-                        switch (command) {
-                        case COMMAND_INVALID:
-                        case COMMAND_MAX_:
-                            // ERROR
-                            break;
+                    switch (command)
+                    {
+                    case COMMAND_INVALID:
+                    case COMMAND_MAX_:
+                        // ERROR
+                        break;
 
-                        case COMMAND_INFO: {
-                            // get infodata
-                            const InfoDataPtr& info_data = InfoData::parse(is);
+                    case COMMAND_INFO:
+                    {
+                        // get infodata
+                        InfoDataPtr info_data = InfoData::parse(is);
+                        if (info_data != nullptr)
+                        {
                             packet_option.getValue().setData(info_data);
                         }
-                            break;
-
-                        case COMMAND_INITIALIZE:
+                        else
                         {
-                            // exect ID-data or null
-                            const IdDataPtr& id_data = IdData::parse(is);
-
-                            if (id_data) {
-                                packet_option.getValue().setData(id_data);
-                            }
-
-                            break;
+                            return Option<Packet>();
                         }
 
-                        case COMMAND_DISCOVER:
-                            // TODO
-                            // exect ID-data or null
-                            // parameter-id followed by terminator
-                            break;
+                        break;
+                    }
 
-                        case COMMAND_UPDATE:
+                    case COMMAND_INITIALIZE:
+                    {
+                        // exect ID-data or null
+                        IdDataPtr id_data = IdData::parse(is);
+
+                        if (id_data != nullptr)
                         {
-                            // we expect a Parameter
-                            WriteablePtr param = ParameterParser::parse(is);
-
-                            if (param != nullptr) {
-                                packet_option.getValue().setData(param);
-                            }
-
-                            break;
+                            packet_option.getValue().setData(id_data);
                         }
 
-                        case COMMAND_REMOVE:
+                        break;
+                    }
+
+                    case COMMAND_DISCOVER:
+                        // TODO
+                        // exect ID-data or null
+                        // parameter-id followed by terminator
+                        break;
+
+                    case COMMAND_UPDATE:
+                    {
+                        // we expect a Parameter
+                        ParameterPtr param = ParameterParser::parse(is);
+
+                        if (param != nullptr)
                         {
-                            // we expect ID Data
-                            const IdDataPtr& id_data = IdData::parse(is);
-
-                            if (id_data) {
-                                packet_option.getValue().setData(id_data);
-                            }
-
-                            break;
+                            packet_option.getValue().setData(param);
                         }
 
-                        case COMMAND_UPDATEVALUE:
-                            // handled above
-                            break;
-                        } // switch
+                        break;
+                    }
+
+                    case COMMAND_REMOVE:
+                    {
+                        // we expect ID Data
+                        IdDataPtr id_data = IdData::parse(is);
+
+                        if (id_data != nullptr)
+                        {
+                            packet_option.getValue().setData(id_data);
+                        }
+
+                        break;
+                    }
+
+                    case COMMAND_UPDATEVALUE:
+                        // handled above
+                        break;
+                    } // switch
 
                     break;
                 } // switch
