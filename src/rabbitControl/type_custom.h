@@ -121,14 +121,20 @@ namespace rcp {
                     uint32_t data_length = readFromStream(is, data_length);
                     CHECK_STREAM
 
-                    char data[data_length];
-                    is.get(data, static_cast<std::streamsize>(data_length));
-                    CHECK_STREAM
+                    char* data = new char[data_length];
+                    if (data)
+                    {
+                        is.get(data, static_cast<std::streamsize>(data_length));
+                        CHECK_STREAM
 
-                    //set
-                    obj->config.clear();
-                    obj->config.resize(data_length);
-                    memcpy(&obj->config[0], &data[0], data_length);
+                        //set
+                        obj->config.clear();
+                        obj->config.resize(data_length);
+                        memcpy(&obj->config[0], &data[0], data_length);
+
+                        delete[] data;
+                    }
+
                     break;
                 }
                 }

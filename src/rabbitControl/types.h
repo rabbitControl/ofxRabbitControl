@@ -6,6 +6,14 @@
 #define TERMINATOR 0
 #define OPTIONS_DEFAULT 48
 
+#ifdef QT_CORE_LIB
+#include <QObject>
+
+namespace rcp
+{
+Q_NAMESPACE
+#endif
+
 enum enum_options_t {
     ENUM_OPTIONS_DEFAULT = 48,
     ENUM_OPTIONS_ENTRIES = 49,
@@ -194,6 +202,9 @@ enum datatype_t {
     DATATYPE_IMAGE = 46,
     DATATYPE_MAX_
 };
+#ifdef QT_CORE_LIB
+Q_ENUM_NS(datatype_t)
+#endif
 
 enum number_options_t {
     NUMBER_OPTIONS_DEFAULT = 48,
@@ -229,6 +240,11 @@ enum customwidget_options_t {
     CUSTOMWIDGET_OPTIONS_UUID = 86,
     CUSTOMWIDGET_OPTIONS_CONFIG = 87
 };
+
+#ifdef QT_CORE_LIB
+}
+Q_DECLARE_METATYPE(rcp::datatype_t);
+#endif
 
 
 #endif

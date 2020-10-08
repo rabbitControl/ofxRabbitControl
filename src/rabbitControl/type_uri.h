@@ -183,7 +183,6 @@ namespace rcp {
                     std::string schemas_str = readTinyString(is);
                     CHECK_STREAM
 
-                    // ??
                     obj->schemas.clear();
                     std::stringstream strstr(schemas_str);
                     std::istream_iterator<std::string> begin(strstr);

@@ -36,6 +36,7 @@
 #define SERVERTRANSPORTER_H
 
 #include <map>
+#include <istream>
 
 namespace rcp {
 

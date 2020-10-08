@@ -37,6 +37,7 @@
 
 #include <vector>
 #include <string>
+#include <functional>
 
 #include "types.h"
 #include "writeable.h"
