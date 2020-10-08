@@ -96,6 +96,7 @@ public:
 
         // Initialize Asio Transport
         m_server.init_asio();
+        m_server.set_reuse_addr(true);
 
         // Register handler callbacks
         m_server.set_open_handler(std::bind(&websocketServerTransporter::on_open,this,::_1));
@@ -128,13 +129,19 @@ public:
     // the thread function
     void threadedFunction()
     {
-        // Start the server accept loop
-        m_server.start_accept();
+        try
+        {
+            // Listen on port
+            m_server.listen(uint16_t(m_port));
 
-        // Start the ASIO io_service run loop
-        try {
+            // Start the server accept loop
+            m_server.start_accept();
+
+            // Start the ASIO io_service run loop
             m_server.run();
-        } catch (const std::exception & e) {
+        }
+        catch (const std::exception & e)
+        {
             ofLogNotice() << e.what();
         }
     }
@@ -145,8 +152,7 @@ public:
     {
         unbind();
 
-        // Listen on port
-        m_server.listen(uint16_t(port));
+        m_port = port;
 
         startThread();
     }
@@ -159,7 +165,6 @@ public:
         }
 
         m_server.stop_listening();
-
         m_server.stop();
         m_connections.clear();
     }
@@ -334,6 +339,7 @@ private:
     // service thread
     websocketpp::lib::thread *ws_thread{nullptr};
     std::atomic_bool m_run{false};
+    uint16_t m_port{0};
 };
 
 #endif // OFXRABBITCONTROL_WEBSOCKET_SERVER_TRANSPORTER_H
