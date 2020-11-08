@@ -39,6 +39,7 @@
 
 #include "servertransporter.h"
 #include "parametermanager.h"
+#include "rcp_error_listener.h"
 
 namespace rcp {
 
@@ -160,6 +161,13 @@ public:
         return parameterManager->createGroupParameter(label, group);
     }
 
+    void addParsingErrorCb(ParsingErrorListener* c, void(ParsingErrorListener::* func)()) {
+        parsing_error_cb[c] = func;
+    }
+    void removeParsingErrorCb(ParsingErrorListener* c) {
+        parsing_error_cb.erase(c);
+    }
+
 
     void dumpHierarchy() {
         root->dumpChildren(0);
@@ -186,6 +194,7 @@ private:
 
     std::string m_applicationId;
 //    Events:
+    std::map<ParsingErrorListener*, void(ParsingErrorListener::*)()> parsing_error_cb;
 //    onError(Exception ex);
 };
 

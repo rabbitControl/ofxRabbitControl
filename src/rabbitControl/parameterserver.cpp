@@ -71,50 +71,55 @@ namespace rcp {
     }
 
 
-    void ParameterServer::received(std::istream& data, ServerTransporter& transporter, void* id) {
-
+    void ParameterServer::received(std::istream& data, ServerTransporter& transporter, void* id)
+    {
         // parse data
         Option<Packet> packet_option = Packet::parse(data);
 
-        if (!packet_option.hasValue()) {
-            return;
-        }
+        if (packet_option.hasValue())
+        {
+            // got a packet
+            Packet& the_packet = packet_option.getValue();
 
-        // got a packet
-        Packet& the_packet = packet_option.getValue();
+            switch (the_packet.getCommand())
+            {
+            case COMMAND_INITIALIZE:
+                _init(transporter, id);
+                break;
 
-        switch (the_packet.getCommand()) {
-
-        case COMMAND_INITIALIZE:
-            _init(transporter, id);
-            break;
-
-        case COMMAND_UPDATEVALUE:
-        case COMMAND_UPDATE:
-            if (_update(the_packet, transporter, id)) {
-                // send data to all clients
-                for (auto& transporter : transporterList) {
-                    transporter.get().sendToAll(data, id);
+            case COMMAND_UPDATEVALUE:
+            case COMMAND_UPDATE:
+                if (_update(the_packet, transporter, id)) {
+                    // send data to all clients
+                    for (auto& transporter : transporterList) {
+                        transporter.get().sendToAll(data, id);
+                    }
                 }
+                break;
+
+            case COMMAND_INFO:
+                // handle version-packet
+                _version(the_packet, transporter, id);
+                break;
+
+            case COMMAND_DISCOVER:
+                // not implemented
+                break;
+
+            case COMMAND_REMOVE:
+                // error!
+                break;
+
+            case COMMAND_INVALID:
+            case COMMAND_MAX_:
+                break;
             }
-            break;
-
-        case COMMAND_INFO:
-            // handle version-packet
-            _version(the_packet, transporter, id);
-            break;
-
-        case COMMAND_DISCOVER:
-            // not implemented
-            break;
-
-        case COMMAND_REMOVE:
-            // error!
-            break;
-
-        case COMMAND_INVALID:
-        case COMMAND_MAX_:
-            break;
+        }
+        else
+        {
+            for (const auto& kv : parsing_error_cb) {
+                (kv.first->*kv.second)();
+            }
         }
     }
 

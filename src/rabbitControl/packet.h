@@ -47,8 +47,8 @@ namespace rcp {
     class Packet : public Writeable
     {
     public:
-        static Option<Packet> parse(std::istream& is) {
-
+        static Option<Packet> parse(std::istream& is)
+        {
             // read command
             command_t command = static_cast<command_t>(is.get());
 
@@ -66,13 +66,13 @@ namespace rcp {
                 return Option<Packet>();
             }
 
-            // create proper packet
+            // create valid packet
             Option<Packet> packet_option = Packet(command);
 
             //------------------------------------
             // handle update value
-            if (packet_option.getValue().getCommand() == COMMAND_UPDATEVALUE) {
-
+            if (packet_option.getValue().getCommand() == COMMAND_UPDATEVALUE)
+            {
                 ParameterPtr param = ParameterParser::parseUpdateValue(is);
 
                 if (param != nullptr) {
@@ -89,7 +89,7 @@ namespace rcp {
 
             //------------------------------------
             // read options
-            while(!is.eof())
+            while (!is.eof())
             {
                 // read option prefix
                 packet_options_t packet_prefix = static_cast<packet_options_t>(is.get());

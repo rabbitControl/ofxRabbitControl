@@ -97,8 +97,8 @@ namespace rcp {
         m_parameterManager->clear();
     }
 
-    void ParameterClient::received(std::istream& data) {
-
+    void ParameterClient::received(std::istream& data)
+    {
         auto packet = rcp::Packet::parse(data);
         if (packet.hasValue()) {
 
@@ -132,6 +132,13 @@ namespace rcp {
             case COMMAND_MAX_:
                 std::cerr << "got invalid command!\n";
                 break;
+            }
+        }
+        else
+        {
+            // parsing error??
+            for (const auto& kv : parsing_error_cb) {
+                (kv.first->*kv.second)();
             }
         }
     }

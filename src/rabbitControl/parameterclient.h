@@ -4,6 +4,7 @@
 #include "packet.h"
 #include "clienttransporter.h"
 #include "parametermanager.h"
+#include "rcp_error_listener.h"
 
 namespace rcp {
 
@@ -43,6 +44,13 @@ namespace rcp {
             parameter_removed_cb.erase(c);
         }
 
+        void addParsingErrorCb(ParsingErrorListener* c, void(ParsingErrorListener::* func)()) {
+            parsing_error_cb[c] = func;
+        }
+        void removeParsingErrorCb(ParsingErrorListener* c) {
+            parsing_error_cb.erase(c);
+        }
+
 
         // interface ClientTransporterListener
         virtual void connected();
@@ -67,6 +75,7 @@ namespace rcp {
         // Events:
         std::map<ParameterClientListener*, void(ParameterClientListener::*)(ParameterPtr parameter)> parameter_added_cb;
         std::map<ParameterClientListener*, void(ParameterClientListener::*)(ParameterPtr parameter)> parameter_removed_cb;
+        std::map<ParsingErrorListener*, void(ParsingErrorListener::*)()> parsing_error_cb;
 //        onError(Exception ex);
 //        statusChanged(Status status, String message);
 
