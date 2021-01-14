@@ -41,28 +41,22 @@ namespace rcp {
     }
 
     //---------------------------------------------------
-    // read from stream
-
-    std::string readFromStream(std::istream& is, const std::string& i) {
-        return readLongString(is);
-    }
-
     // read strings from stream
     std::string readTinyString(std::istream& is) {
 
-        char size;
+        char size = 0;
         return readStringFromStream(is, size);
     }
 
     std::string readShortString(std::istream& is) {
 
-        uint16_t size;
+        uint16_t size = 0;
         return readStringFromStream(is, size);
     }
 
     std::string readLongString(std::istream& is) {
 
-        uint32_t size;
+        uint32_t size = 0;
         return readStringFromStream(is, size);
     }
 

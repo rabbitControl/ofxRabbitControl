@@ -174,7 +174,7 @@ namespace rcp {
                 switch (opt) {
                 case ENUM_OPTIONS_DEFAULT: {
 
-                    std::string d = readFromStream(is, d);
+                    std::string d = readTinyString(is);
                     CHECK_STREAM
 
                     obj->hasDefaultValue = true;

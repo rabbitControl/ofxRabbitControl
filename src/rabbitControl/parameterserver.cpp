@@ -74,7 +74,7 @@ namespace rcp {
     void ParameterServer::received(std::istream& data, ServerTransporter& transporter, void* id)
     {
         // parse data
-        Option<Packet> packet_option = Packet::parse(data);
+        Option<Packet> packet_option = Packet::parse(data, parameterManager);
 
         if (packet_option.hasValue())
         {

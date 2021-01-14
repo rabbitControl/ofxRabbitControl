@@ -99,7 +99,7 @@ namespace rcp {
 
     void ParameterClient::received(std::istream& data)
     {
-        auto packet = rcp::Packet::parse(data);
+        auto packet = rcp::Packet::parse(data, m_parameterManager);
         if (packet.hasValue()) {
 
             rcp::Packet& the_packet = packet.getValue();

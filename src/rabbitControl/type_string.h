@@ -99,7 +99,7 @@ namespace rcp {
                 switch (opt) {
                 case STRING_OPTIONS_DEFAULT: {
 
-                    std::string d = readFromStream(is, d);
+                    std::string d = readLongString(is);
                     CHECK_STREAM
 
                     obj->hasDefaultValue = true;
@@ -108,7 +108,7 @@ namespace rcp {
                 }
                 case STRING_OPTIONS_REGULAR_EXPRESSION: {
 
-                    std::string d = readFromStream(is, d);
+                    std::string d = readLongString(is);
                     CHECK_STREAM
 
                     obj->hasRegex = true;

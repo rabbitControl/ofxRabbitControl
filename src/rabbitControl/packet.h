@@ -47,7 +47,7 @@ namespace rcp {
     class Packet : public Writeable
     {
     public:
-        static Option<Packet> parse(std::istream& is)
+        static Option<Packet> parse(std::istream& is, std::shared_ptr<IParameterManager> manager = nullptr)
         {
             // read command
             command_t command = static_cast<command_t>(is.get());
@@ -178,7 +178,7 @@ namespace rcp {
                     case COMMAND_UPDATE:
                     {
                         // we expect a Parameter
-                        ParameterPtr param = ParameterParser::parse(is);
+                        ParameterPtr param = ParameterParser::parse(is, manager);
 
                         if (param != nullptr)
                         {
