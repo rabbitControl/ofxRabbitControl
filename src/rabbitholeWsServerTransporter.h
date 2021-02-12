@@ -53,10 +53,7 @@ public:
     rabbitholeWsServerTransporter(const std::string& uri = "");
     ~rabbitholeWsServerTransporter();
 
-    void setUri(const std::string& uri)
-    {
-        m_uri = uri;
-    }
+    void setUri(const std::string& uri);
 
 public:
     // ofThread

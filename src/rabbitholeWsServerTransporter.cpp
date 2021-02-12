@@ -39,8 +39,8 @@
 
 rabbitholeWsServerTransporter::rabbitholeWsServerTransporter(const std::string& uri)
     : rcp::websocketClient()
-    , m_uri(uri)
 {
+    setUri(uri);
 }
 
 rabbitholeWsServerTransporter::~rabbitholeWsServerTransporter()
@@ -48,6 +48,20 @@ rabbitholeWsServerTransporter::~rabbitholeWsServerTransporter()
     unbind();
 }
 
+
+void rabbitholeWsServerTransporter::setUri(const std::string& uri)
+{
+    m_uri = uri;
+
+    if (m_uri.find("https", 0) == 0)
+    {
+        m_uri = m_uri.replace(0, 5, "wss");
+    }
+    else if (m_uri.find("http", 0) == 0)
+    {
+        m_uri = m_uri.replace(0, 4, "ws");
+    }
+}
 
 void rabbitholeWsServerTransporter::tryConnect()
 {
