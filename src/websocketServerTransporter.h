@@ -1,6 +1,6 @@
 /*
 ********************************************************************
-* rabbitcontrol cpp
+* websocketServerTransporter
 *
 * written by: Ingo Randolf - 2020
 *
