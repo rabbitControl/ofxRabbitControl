@@ -17,13 +17,20 @@ void ofApp::setup(){
 
 
     //----------------------------------------
-    // setup rabbitserver
+    // setup rabbitcontrol server
     rabbit.setApplicationId("ofx rabbitcontrol server");
 
     // add a transporter
     rabbit.addTransporter(transporter);
     // bind to port
     transporter.bind(10000);
+
+
+    //----------------------------------------
+    // setup rabbithole transporter
+    rabbitholeTransporter.setUri("wss://rabbithole.rabbitcontrol.cc/public/rcpserver/connect?key=ofxtest");
+    rabbit.addTransporter(rabbitholeTransporter);
+    rabbitholeTransporter.bind(0);
 
 
     //----------------------------------------
@@ -34,13 +41,9 @@ void ofApp::setup(){
 
     // setup rcp parameter
     auto rabbitStr = rabbit.expose(strParam);
-    // change label
     rabbitStr.setLabel("new string label");
-    // set a label in french
     rabbitStr.setLanguageLabel("fra", "une chose variable");
-    // add a description
     rabbitStr.setDescription("this is a bool with a french label");
-    // set some tags
     rabbitStr.setTags("desc lableled some");
 
     //----------------------------------------
