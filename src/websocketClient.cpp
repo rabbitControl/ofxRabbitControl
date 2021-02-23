@@ -35,10 +35,10 @@
 #include "websocketClient.h"
 
 // make sure these are built
-#include <boost/asio/ssl/impl/error.hpp>
-#include <boost/asio/ssl/impl/contexti.hpp>
-#include <boost/asio/ssl/detail/impl/engine.hpp>
-#include <boost/asio/ssl/detail/impl/openssl_init.hpp>
+#include <asio/ssl/impl/error.hpp>
+#include <asio/ssl/impl/contexti.hpp>
+#include <asio/ssl/detail/impl/engine.hpp>
+#include <asio/ssl/detail/impl/openssl_init.hpp>
 
 namespace rcp
 {
@@ -241,19 +241,19 @@ void websocketClient::send(char* data, size_t size)
 
 context_ptr websocketClient::on_tls_init(websocketpp::connection_hdl)
 {
-    context_ptr ctx = websocketpp::lib::make_shared<boost::asio::ssl::context>(boost::asio::ssl::context::sslv23);
+    context_ptr ctx = websocketpp::lib::make_shared<websocketpp::lib::asio::ssl::context>(asio::ssl::context::sslv23);
 
     try
     {
-        ctx->set_options(boost::asio::ssl::context::default_workarounds |
-                         boost::asio::ssl::context::no_sslv2 |
-                         boost::asio::ssl::context::no_sslv3 |
-                         boost::asio::ssl::context::single_dh_use);
+        ctx->set_options(asio::ssl::context::default_workarounds |
+                         asio::ssl::context::no_sslv2 |
+                         asio::ssl::context::no_sslv3 |
+                         asio::ssl::context::single_dh_use);
 
 
-        ctx->set_verify_mode(boost::asio::ssl::verify_none);
+        ctx->set_verify_mode(asio::ssl::verify_none);
 
-//            ctx->set_verify_mode(boost::asio::ssl::verify_peer);
+//            ctx->set_verify_mode(asio::ssl::verify_peer);
 //            ctx->set_verify_callback(bind(&websocketClient::verify_certificate, this, ::_1, ::_2));
 
         // Here we load the CA certificates of all CA's that this client trusts.
@@ -334,7 +334,7 @@ bool websocketClient::verify_common_name(X509 * cert)
     return (strcasecmp(m_hostname.c_str(), common_name_str) == 0);
 }
 
-bool websocketClient::verify_certificate(bool preverified, boost::asio::ssl::verify_context& ctx)
+bool websocketClient::verify_certificate(bool preverified, asio::ssl::verify_context& ctx)
 {
     // The verify callback can be used to check whether the certificate that is
     // being presented is valid for the peer. For example, RFC 2818 describes

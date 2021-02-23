@@ -5,7 +5,7 @@ meta:
     ADDON_TAGS = "Utilities"
     ADDON_URL = https://github.com/rabbitControl/ofxRabbitControl
 
-# using boot asio, interprocess v 1.72.0
+# using asio 1.18.1
 
 common:
 	# dependencies with other addons, a list of them separated by spaces
@@ -18,7 +18,10 @@ common:
 	ADDON_INCLUDES += libs/
 
 	# prevent boost to be used header only
-	ADDON_DEFINES += BOOST_ASIO_SEPARATE_COMPILATION
+	ADDON_DEFINES += ASIO_STANDALONE
+	ADDON_DEFINES += ASIO_SEPARATE_COMPILATION
+	ADDON_DEFINES += _WEBSOCKETPP_CPP11_CHRONO_
+	ADDON_DEFINES += _WEBSOCKETPP_CPP11_THREAD_
 
 
 osx:

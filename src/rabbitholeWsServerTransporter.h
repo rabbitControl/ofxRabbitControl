@@ -57,7 +57,7 @@ public:
 
 public:
     // ofThread
-    void threadedFunction();
+    void threadedFunction() override;
 
 public:
     // webserverClient

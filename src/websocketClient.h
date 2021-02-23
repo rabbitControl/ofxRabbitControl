@@ -40,6 +40,8 @@
 
 #include <websocketpp/common/thread.hpp>
 
+#include <asio/ssl.hpp>
+
 typedef websocketpp::client<websocketpp::config::asio_client> client;
 typedef websocketpp::client<websocketpp::config::asio_tls_client> ssl_client;
 typedef websocketpp::lib::shared_ptr<websocketpp::lib::asio::ssl::context> context_ptr;
@@ -98,7 +100,7 @@ public:
     context_ptr on_tls_init(websocketpp::connection_hdl);
     bool verify_subject_alternative_name(X509 * cert);
     bool verify_common_name(X509 * cert);
-    bool verify_certificate(bool preverified, boost::asio::ssl::verify_context& ctx);
+    bool verify_certificate(bool preverified, asio::ssl::verify_context& ctx);
 
 private:
     std::string m_hostname = "rabbithole.rabbitcontrol.cc";
