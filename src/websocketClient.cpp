@@ -40,6 +40,12 @@
 #include <asio/ssl/detail/impl/engine.hpp>
 #include <asio/ssl/detail/impl/openssl_init.hpp>
 
+#ifndef RCP_PD_NO_SSL
+#ifdef _WIN32
+#define strcasecmp _stricmp
+#endif
+#endif
+
 namespace rcp
 {
 
@@ -47,11 +53,8 @@ websocketClient::websocketClient()
 {
     // Set logging to be pretty verbose (everything except message payloads)
     m_client.clear_access_channels(websocketpp::log::alevel::all);
-//        m_client.clear_access_channels(websocketpp::log::alevel::frame_payload);
+//    m_client.clear_access_channels(websocketpp::log::alevel::frame_payload);
 
-    m_sslClient.clear_access_channels(websocketpp::log::alevel::all);
-//        m_sslClient.clear_access_channels(websocketpp::log::alevel::frame_payload);
-    m_sslClient.set_tls_init_handler(bind(&websocketClient::on_tls_init, this, ::_1));
 
     // Initialize Asio Transport
 
@@ -59,25 +62,33 @@ websocketClient::websocketClient()
     m_client.start_perpetual();
     m_thread = websocketpp::lib::make_shared<websocketpp::lib::thread>(&client::run, &m_client);
 
+#ifndef RCP_PD_NO_SSL
+    m_sslClient.clear_access_channels(websocketpp::log::alevel::all);
+//    m_sslClient.clear_access_channels(websocketpp::log::alevel::frame_payload);
+    m_sslClient.set_tls_init_handler(bind(&websocketClient::on_tls_init, this, ::_1));
+
     m_sslClient.init_asio();
     m_sslClient.start_perpetual();
     m_sslThread = websocketpp::lib::make_shared<websocketpp::lib::thread>(&ssl_client::run, &m_sslClient);
+#endif
 }
 
 websocketClient::~websocketClient()
-	{
-        m_sslClient.stop_perpetual();
-        m_client.stop_perpetual();
+{
+    close();
+    m_client.stop_perpetual();
+    m_thread->join();
 
-        close();
-
-        m_sslThread->join();
-        m_thread->join();
-	}
+#ifndef RCP_PD_NO_SSL
+    m_sslClient.stop_perpetual();
+    m_sslThread->join();
+#endif
+}
 
 
 void websocketClient::close()
 {
+#ifndef RCP_PD_NO_SSL
     if (m_sslCon)
     {
         m_sslCon->set_open_handler(nullptr);
@@ -96,6 +107,7 @@ void websocketClient::close()
 
         m_sslCon.reset();
     }
+#endif
 
     if (m_con)
     {
@@ -132,6 +144,7 @@ void websocketClient::connect(const std::string& uri, const std::string& subprot
     websocketpp::lib::error_code ec;
     if (uri.find("wss", 0) == 0)
     {
+#ifndef RCP_PD_NO_SSL
         m_sslCon = m_sslClient.get_connection(uri, ec);
         if (ec) {
             std::cout << "could not create connection: " << ec.message() << std::endl;
@@ -155,6 +168,10 @@ void websocketClient::connect(const std::string& uri, const std::string& subprot
         catch (const std::exception & e) {
             std::cout << "connect error: " << e.what() << std::endl;
         }
+#else
+        // unable to connect to wss without ssl
+        std::cerr << "can not connect to secure websocket - no ssl" << std::endl;
+#endif
     }
     else
     {
@@ -186,10 +203,12 @@ void websocketClient::connect(const std::string& uri, const std::string& subprot
 
 bool websocketClient::isOpen() const
 {
+#ifndef RCP_PD_NO_SSL
     if (m_sslCon)
     {
         return m_sslCon->get_state() == websocketpp::session::state::open;
     }
+#endif
 
     if (m_con)
     {
@@ -200,7 +219,7 @@ bool websocketClient::isOpen() const
 }
 
 
-void websocketClient::on_message(connection_hdl hdl, ssl_client::message_ptr msg)
+void websocketClient::on_message(connection_hdl /*hdl*/, ssl_client::message_ptr msg)
 {
     {
         if (msg->get_opcode() == websocketpp::frame::opcode::value::binary)
@@ -218,6 +237,7 @@ void websocketClient::on_message(connection_hdl hdl, ssl_client::message_ptr msg
 
 void websocketClient::send(char* data, size_t size)
 {
+#ifndef RCP_PD_NO_SSL
     if (m_sslCon)
     {
         websocketpp::lib::error_code ec;
@@ -226,6 +246,7 @@ void websocketClient::send(char* data, size_t size)
             std::cout << "sending failed: " << ec.message() << std::endl << std::endl;
         }
     }
+#endif
 
     if (m_con)
     {
@@ -236,6 +257,9 @@ void websocketClient::send(char* data, size_t size)
         }
     }
 }
+
+
+#ifndef RCP_PD_NO_SSL
 
 // ssl
 
@@ -293,7 +317,6 @@ bool websocketClient::verify_subject_alternative_name(X509 * cert)
             break;
         }
         // Compare expected hostname with the CN
-        std::cout << "dns_name: " << dns_name << std::endl;
         result = (strcasecmp(m_hostname.c_str(), dns_name) == 0);
     }
     sk_GENERAL_NAME_pop_free(san_names, GENERAL_NAME_free);
@@ -330,7 +353,6 @@ bool websocketClient::verify_common_name(X509 * cert)
     }
 
     // Compare expected hostname with the CN
-    std::cout << "common_name_str: " << common_name_str << std::endl;
     return (strcasecmp(m_hostname.c_str(), common_name_str) == 0);
 }
 
@@ -361,14 +383,13 @@ bool websocketClient::verify_certificate(bool preverified, asio::ssl::verify_con
         } else if (verify_common_name(cert)) {
             return true;
         } else {
-            std::cout << "NOOOO: " << std::endl;
             return false;
         }
     }
 
-    std::cout << "preverified: " << preverified << std::endl;
-
     return preverified;
 }
+
+#endif
 
 }

@@ -37,7 +37,6 @@
 
 #include <websocketpp/config/asio_client.hpp>
 #include <websocketpp/client.hpp>
-
 #include <websocketpp/common/thread.hpp>
 
 #include <asio/ssl.hpp>
@@ -55,6 +54,7 @@ using websocketpp::lib::bind;
 typedef websocketpp::config::asio_client::message_type::ptr message_ptr;
 
 using websocketpp::lib::thread;
+
 
 namespace rcp {
 
@@ -109,10 +109,12 @@ private:
     websocketpp::lib::shared_ptr<websocketpp::lib::thread> m_thread;
     client::connection_ptr m_con;
 
+#ifndef RCP_PD_NO_SSL
     // ssl
     ssl_client m_sslClient;
 	websocketpp::lib::shared_ptr<websocketpp::lib::thread> m_sslThread;
     ssl_client::connection_ptr m_sslCon;
+#endif
 };
 
 }
