@@ -9,7 +9,7 @@ void ofApp::setup(){
     // setup gui
     gui.setup("panel");
     gui.add(int32Param.set("int 32", 1100, 1010, 1510));
-    gui.add(boolParam.set("BOOOL", true));
+    gui.add(boolParam.set("BOOL", true));
     gui.add(dblParam.set("DOUBLE", 3.1415, 0.0, 10.0));
     gui.add(floatParam.set("float parameter", 1.111, 0.0, 10.0));
     gui.add(strParam.set("some text", "bla"));
@@ -41,10 +41,10 @@ void ofApp::setup(){
 
     // setup rcp parameter
     auto rabbitStr = rabbit.expose(strParam);
-    rabbitStr.setLabel("new string label");
-    rabbitStr.setLanguageLabel("fra", "une chose variable");
-    rabbitStr.setDescription("this is a bool with a french label");
-    rabbitStr.setTags("desc lableled some");
+    rabbitStr->setLabel("new string label");
+    rabbitStr->setLanguageLabel("fra", "une chose variable");
+    rabbitStr->setDescription("this is a bool with a french label");
+    rabbitStr->setTags("desc tagged some");
 
     //----------------------------------------
     // expose groups
