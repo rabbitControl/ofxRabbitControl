@@ -35,16 +35,14 @@
 #ifndef OFXRABBITCONTROL_WEBSOCKET_SERVER_TRANSPORTER_H
 #define OFXRABBITCONTROL_WEBSOCKET_SERVER_TRANSPORTER_H
 
-#include <websocketpp/config/asio_no_tls.hpp>
-#include <websocketpp/server.hpp>
-#include <websocketpp/common/thread.hpp>
+#include "rabbitControl/servertransporter.h"
 
-#include <boost/interprocess/streams/bufferstream.hpp>
 #include <iostream>
 #include <set>
 
-
-#include "rabbitControl/servertransporter.h"
+#include <websocketpp/config/asio_no_tls.hpp>
+#include <websocketpp/server.hpp>
+#include <websocketpp/common/thread.hpp>
 
 typedef websocketpp::server<websocketpp::config::asio> server;
 
@@ -301,9 +299,9 @@ public:
                 if (a.msg->get_opcode() == websocketpp::frame::opcode::value::binary)
                 {
                     auto data = a.msg->get_raw_payload();
-
-                    boost::interprocess::bufferstream input_stream(const_cast<char*>(data.data()), data.size());
-
+					
+					std::istringstream input_stream(std::string(const_cast<char*>(data.data()), data.size()));
+					
                     if (auto ptr = a.hdl.lock())
                     {
                         // call receive callbacks

@@ -39,8 +39,6 @@
 
 #include "websocketClient.h"
 
-#include <boost/interprocess/streams/bufferstream.hpp>
-
 #include <ofLog.h>
 #include <ofThread.h>
 

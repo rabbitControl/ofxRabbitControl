@@ -104,7 +104,7 @@ void rabbitholeWsServerTransporter::disconnected()
 
 void rabbitholeWsServerTransporter::received(char* data, size_t size)
 {
-    boost::interprocess::bufferstream input_stream(const_cast<char*>(data), size);
+	std::istringstream input_stream(std::string(const_cast<char*>(data), size));
 
     // call receive callbacks
     for (const auto& kv : receive_cb) {
