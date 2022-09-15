@@ -17,8 +17,8 @@ common:
 	# specified here separated by spaces or one per line using +=
 	ADDON_INCLUDES += libs/
 
-        # uncomment if compiling without ssl (not recommended)
-        #ADDON_DEFINES += RCP_PD_NO_SSL
+	# uncomment if compiling without ssl (not recommended)
+	#ADDON_DEFINES += RCP_PD_NO_SSL
 
 	# prevent boost to be used header only
 	ADDON_DEFINES += ASIO_STANDALONE
@@ -26,19 +26,20 @@ common:
 	ADDON_DEFINES += _WEBSOCKETPP_CPP11_CHRONO_
 	ADDON_DEFINES += _WEBSOCKETPP_CPP11_THREAD_
 
-
-osx:
+# windows?
 	# ADDON_INCLUDES_EXCLUDE = libs/libwebsockets/include/win32port
 	# ADDON_INCLUDES_EXCLUDE += libs/libwebsockets/include/win32port/win32helpers
+
+osx:
 	# OpenSSL support for OSX 10.11+
 	ADDON_INCLUDES 	+= libs/openssl/include
-        ADDON_LIBS 	+= libs/openssl/lib/osx/crypto.a
-        ADDON_LIBS 	+= libs/openssl/lib/osx/ssl.a
+	ADDON_LIBS 	+= libs/openssl/lib/osx/crypto.a
+	ADDON_LIBS 	+= libs/openssl/lib/osx/ssl.a
 
 linux64:
-        ADDON_LDFLAGS   += -lcrypto
-        ADDON_LDFLAGS   += -lssl
+	ADDON_LDFLAGS   += -lcrypto
+	ADDON_LDFLAGS   += -lssl
 
 linux:
-        ADDON_LDFLAGS   += -lcrypto
-        ADDON_LDFLAGS   += -lssl
+	ADDON_LDFLAGS   += -lcrypto
+	ADDON_LDFLAGS   += -lssl
