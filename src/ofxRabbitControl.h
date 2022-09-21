@@ -56,6 +56,7 @@ public:
     rcp::Float64ParameterPtr expose(ofParameter<double> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
     rcp::StringParameterPtr expose(ofParameter<std::string> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
     rcp::RGBAParameterPtr expose(ofParameter<ofColor> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
+    rcp::RGBAParameterPtr expose(ofParameter<ofFloatColor> & param, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
 
     void remove(ofParameter<bool> & param);
     void remove(ofParameter<char> & param);
@@ -64,7 +65,8 @@ public:
     void remove(ofParameter<double> & param);
     void remove(ofParameter<std::string> & param);
     void remove(ofParameter<ofColor> & param);
-
+    void remove(ofParameter<ofFloatColor> & param);
+    
     void paramBoolChanged(bool & value);
     void paramInt8Changed(char & value);
     void paramInt32Changed(int & value);
@@ -72,7 +74,8 @@ public:
     void paramDoubleChanged(double & value);
     void paramStringChanged(std::string & value);
     void paramColorChanged(ofColor & value);
-
+    void paramFloatColorChanged(ofFloatColor & value);
+    
 private:
     int16_t findParam(void* paramAdr);
 
