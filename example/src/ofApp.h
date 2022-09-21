@@ -40,6 +40,7 @@ public:
     ofParameter<bool> boolParam;
     ofParameter<std::string> strParam;
     ofParameter<ofColor> clrParam;
+    ofParameter<ofFloatColor> clrParamF;
 
     ofxRabbitControlServer rabbit;
     websocketServerTransporter transporter;

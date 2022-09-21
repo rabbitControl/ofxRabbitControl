@@ -14,6 +14,7 @@ void ofApp::setup(){
     gui.add(floatParam.set("float parameter", 1.111, 0.0, 10.0));
     gui.add(strParam.set("some text", "bla"));
     gui.add(clrParam.set("Color", ofColor::azure));
+    gui.add(clrParamF.set("Color Float", ofFloatColor::red));
 
 
     //----------------------------------------
@@ -60,6 +61,7 @@ void ofApp::setup(){
     group.add(dblParam);
     group.add(floatParam);
     group.add(clrParam);
+    group.add(clrParamF);
 
     // expose whole group via rabbit
     rabbit.expose(group);
