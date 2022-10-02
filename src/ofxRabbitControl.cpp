@@ -110,8 +110,11 @@ rcp::GroupParameterPtr ofxRabbitControlServer::expose(ofParameterGroup& group, c
         } else if (t.find("basic_string") != std::string::npos) {
             auto& p = group.getString(group[i].getName());
             expose(p, gp);
-        } else if (t.find("ofColor") != std::string::npos) {
+        } else if (t.find("ofColor_IhE") != std::string::npos) {
             auto& p = group.getColor(group[i].getName());
+            expose(p, gp);
+        } else if (t.find("ofColor_IfE") != std::string::npos) {
+            auto& p = group.getFloatColor(group[i].getName());
             expose(p, gp);
         } else if (t.find("ofParameterGroup") != std::string::npos) {
             auto& p = group.getGroup(group[i].getName());
@@ -573,7 +576,7 @@ void ofxRabbitControlServer::paramStringChanged(std::string & value)
 
 //----------------------------------------------------
 //----------------------------------------------------
-// color
+// ofColor
 //----------------------------------------------------
 //----------------------------------------------------
 rcp::RGBAParameterPtr ofxRabbitControlServer::expose(ofParameter<ofColor> & param, const rcp::GroupParameterPtr& rabbitgroup)
@@ -653,3 +656,87 @@ void ofxRabbitControlServer::paramColorChanged(ofColor & value)
     }
 }
 
+//----------------------------------------------------
+//----------------------------------------------------
+// ofFloatColor
+// Quick fix to support ofFLoatColor by ofFloatColor -> ofColor conversion.
+// Please notice it loses 32bit float precision but 8bit.
+//----------------------------------------------------
+//----------------------------------------------------
+rcp::RGBAParameterPtr ofxRabbitControlServer::expose(ofParameter<ofFloatColor> & param, const rcp::GroupParameterPtr& rabbitgroup)
+{
+    auto it = paramIdMap.find((void*)&param.get());
+    if (it != paramIdMap.end())
+    {
+        // already exposed
+        return std::dynamic_pointer_cast<rcp::RGBAParameter>(ParameterServer::getParameter(it->second));
+    }
+
+    // setup
+    rcp::RGBAParameterPtr p;
+
+    if (rabbitgroup)
+    {
+        p = ParameterServer::createRGBAParameter(param.getName(), const_cast<rcp::GroupParameterPtr&>(rabbitgroup));
+    }
+    else
+    {
+        p = ParameterServer::createRGBAParameter(param.getName());
+    }
+
+    ofColor tmp(param.get().r*255.0f, param.get().g*255.0f, param.get().b*255.0f, param.get().a*255.0f);
+    uint32_t cv = tmp.r + (tmp.g << 8) + (tmp.b << 16) + (tmp.a << 24);
+    p->setValue(rcp::Color(cv));
+
+    p->addValueUpdatedCb([&param](rcp::Color& v)
+    {
+        uint32_t cv = v.getValue();
+        float r = cv & 0xFF;
+        float g = (cv >> 8) & 0xFF;
+        float b = (cv >> 16) & 0xFF;
+        float a = (cv >> 24) & 0xFF;
+
+        param.set(ofColor(r, g, b, a));
+    });
+
+    p->addUpdatedCb([&param, p]()
+    {
+        param.setName(p->getLabel());
+    });
+
+    // set change listener to update rcp parameter
+    param.addListener(this, &ofxRabbitControlServer::paramFloatColorChanged);
+
+    // insert into maps
+    paramIdMap[(void*)&param.get()] = p->getId();
+
+    return p;
+}
+
+void ofxRabbitControlServer::remove(ofParameter<ofFloatColor> & param)
+{
+    ofParameterRemove(param);
+    param.removeListener(this, &ofxRabbitControlServer::paramFloatColorChanged);
+}
+
+void ofxRabbitControlServer::paramFloatColorChanged(ofFloatColor & value)
+{
+    int16_t id = findParam(&value);
+    if (!id) {
+        return;
+    }
+
+    auto param = std::dynamic_pointer_cast<rcp::RGBAParameter>(ParameterServer::getParameter(id));
+    if (param) {
+
+        int r = value.r * 255.0f;
+        int g = value.g * 255.0f;
+        int b = value.b * 255.0f;
+        int a = value.a * 255.0f;
+
+        uint32_t cv = r + (g << 8) + (b << 16) + (a << 24);
+        param->setValue(rcp::Color(cv));
+        // update
+        ParameterServer::update();
+    }
+}
