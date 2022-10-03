@@ -388,22 +388,30 @@ namespace rcp {
     }
 
 
-    void ParameterManager::setParameterDirty(IParameter& parameter) {
-
+    void ParameterManager::setParameterDirty(IParameter& parameter)
+	{
+#ifndef RCP_MANAGER_NO_LOCKING
+		// protect lists to be used from multiple threads
+		std::lock_guard<std::mutex> lock(m_mutex);
+#endif
+		
         // only add if not already removed
         if (removedParameter.find(parameter.getId()) != removedParameter.end()) {
             // parameter is removed, don't add
-
-            std::cout << "already dirty: " << parameter.getId() << "\n";
-
+            std::cout << "parameter going to be removed: " << parameter.getId() << "\n";
             return;
         }
 
         dirtyParameter[parameter.getId()] = parameter.newReference();
     }
 
-    void ParameterManager::setParameterRemoved(ParameterPtr& parameter) {
-
+    void ParameterManager::setParameterRemoved(ParameterPtr& parameter)
+	{
+#ifndef RCP_MANAGER_NO_LOCKING
+		// protect lists to be used from multiple threads
+		std::lock_guard<std::mutex> lock(m_mutex);
+#endif
+		
         // check if parameter is dirty...
         auto it = dirtyParameter.find(parameter->getId());
         if (it != dirtyParameter.end()) {
@@ -416,9 +424,29 @@ namespace rcp {
 
     void ParameterManager::clear()
     {
+#ifndef RCP_MANAGER_NO_LOCKING
+		// protect lists to be used from multiple threads
+		std::lock_guard<std::mutex> lock(m_mutex);
+#endif
+		
         ids.clear();
         params.clear();
         dirtyParameter.clear();
         removedParameter.clear();
     }
+
+	void ParameterManager::lock()
+	{
+#ifndef RCP_MANAGER_NO_LOCKING
+		m_mutex.lock();
+#endif
+	}
+
+	void ParameterManager::unlock()
+	{
+#ifndef RCP_MANAGER_NO_LOCKING
+		m_mutex.unlock();
+#endif
+	}
+
 }

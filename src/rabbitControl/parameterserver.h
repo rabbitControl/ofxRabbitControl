@@ -51,6 +51,7 @@ public:
     ParameterServer(ServerTransporter& transporter);
     ~ParameterServer();
 
+public:
     void dispose();
     void clear();
 
@@ -58,13 +59,13 @@ public:
     bool removeTransporter(ServerTransporter& transporter);
     int getConnectionCount();
 
-    bool update();
+    virtual bool update();
 
-
+public:
     // ServerTransporterReceiver
     void received(std::istream& data, ServerTransporter& transporter, void* id);
 
-
+public:
     GroupParameterPtr& getRoot() { return root; }
 
     ParameterPtr getParameter(const short& id) {
@@ -181,16 +182,17 @@ public:
         return m_applicationId;
     }
 
+protected:
+	std::shared_ptr<GroupParameter> root;
+	std::shared_ptr<ParameterManager> parameterManager;
+	std::vector<std::reference_wrapper<ServerTransporter> > transporterList;
+	
 private:
     void _init(ServerTransporter& transporter, void *id);
     bool _update(Packet& Packet, ServerTransporter& transporter, void *id);
     void _version(Packet& packet, ServerTransporter& transporter, void *id);
     void _sendParameterFull(ParameterPtr& parameter, ServerTransporter& transporter, void *id);
     void sendPacket(Packet& packet, void *id=nullptr);
-
-    std::shared_ptr<GroupParameter> root;
-    std::shared_ptr<ParameterManager> parameterManager;
-    std::vector<std::reference_wrapper<ServerTransporter> > transporterList;
 
     std::string m_applicationId;
 //    Events:

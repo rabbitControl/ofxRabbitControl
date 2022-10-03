@@ -35,10 +35,16 @@
 #ifndef RCPMANAGER_H
 #define RCPMANAGER_H
 
+//#define RCP_MANAGER_NO_LOCKING
+
 #include <map>
 #include <vector>
 #include <unordered_set>
 #include <climits>
+
+#ifndef RCP_MANAGER_NO_LOCKING
+#include <mutex>
+#endif
 
 #include "parameter_intern.h"
 #include "parameterfactory.h"
@@ -50,9 +56,8 @@ class ParameterManager :
         public IParameterManager,
         public std::enable_shared_from_this<ParameterManager>
 {
-public:    
-
-    static bool isValid(const IParameter& parameter) {
+public:
+	static bool isValid(const IParameter& parameter) {
         return parameter.getTypeDefinition().getDatatype() != DATATYPE_MAX_ &&
                 parameter.getId() != 0;
     }
@@ -66,18 +71,15 @@ public:
         return isValid(parameter) && parameter->getDatatype() == DATATYPE_GROUP;
     }
 
+public:
     ParameterManager();
     ~ParameterManager();
-
-    // IParameterManager
-    virtual ParameterPtr getParameter(const short& id);
-
-
+	
+public:
     //
     void removeParameter(IParameter& parameter);
     void removeParameter(short id);
 
-    //
     BooleanParameterPtr createBooleanParameter(const std::string& label, GroupParameterPtr& group);
     Int8ParameterPtr createInt8Parameter(const std::string& label, GroupParameterPtr& group);
     Int16ParameterPtr createInt16Parameter(const std::string& label, GroupParameterPtr& group);
@@ -85,11 +87,8 @@ public:
     Int64ParameterPtr createInt64Parameter(const std::string& label, GroupParameterPtr& group);
     Float32ParameterPtr createFloat32Parameter(const std::string& label, GroupParameterPtr& group);
     Float64ParameterPtr createFloat64Parameter(const std::string& label, GroupParameterPtr& group);
-
     StringParameterPtr createStringParameter(const std::string& label, GroupParameterPtr& group);
-
     RGBAParameterPtr createRGBAParameter(const std::string& label, GroupParameterPtr& group);
-
     BangParameterPtr createBangParameter(const std::string& label, GroupParameterPtr& group);
 
     GroupParameterPtr createGroupParameter(const std::string& label, GroupParameterPtr& group);
@@ -98,29 +97,38 @@ public:
     template<typename> friend class Parameter;
     friend class ParameterServer;
     friend class ParameterClient;
-
+	
+	
+public:
+	// IParameterManager
+	virtual ParameterPtr getParameter(const short& id) override;
 private:
-    std::shared_ptr<ParameterManager> getShared() {
-        return shared_from_this();
-    }
-
-    //--------
+	// IParameterManager
+	virtual void setParameterDirty(IParameter& parameter) override;
+	virtual void setParameterRemoved(ParameterPtr& parameter) override;
+	
+	
+private:
+    std::shared_ptr<ParameterManager> getShared() { return shared_from_this(); }
     short getNextId();
     void _addParameter(ParameterPtr& parameter);
     void _addParameter(ParameterPtr& parameter, GroupParameterPtr& group);
     void _addParameterDirect(const std::string& label, ParameterPtr& parameter, GroupParameterPtr& group);
+	void removeParameterDirect(ParameterPtr& parameter);
     void clear();
-
-    virtual void setParameterDirty(IParameter& parameter);
-    virtual void setParameterRemoved(ParameterPtr& parameter);
-
-    void removeParameterDirect(ParameterPtr& parameter);
 
     //--------
     std::unordered_set<short> ids;
     std::map<short, ParameterPtr > params;
     std::map<short, ParameterPtr > dirtyParameter;
     std::map<short, ParameterPtr > removedParameter;
+	
+private:
+	void lock();
+	void unlock();
+#ifndef RCP_MANAGER_NO_LOCKING
+	std::mutex m_mutex;
+#endif
 };
 
 }

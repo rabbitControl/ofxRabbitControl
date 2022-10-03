@@ -171,7 +171,9 @@ namespace rcp {
         if (transporterList.size() == 0) {
             return false;
         }
-
+		
+		// protect lists to be used from multiple threads
+		parameterManager->lock();
 
         // send removes
         for (auto& p : parameterManager->removedParameter)
@@ -198,6 +200,9 @@ namespace rcp {
         }
         parameterManager->dirtyParameter.clear();
 
+		// unlock mutex
+		parameterManager->unlock();
+		
         return false;
     }
 

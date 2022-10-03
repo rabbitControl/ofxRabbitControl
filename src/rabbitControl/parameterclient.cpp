@@ -45,6 +45,9 @@ namespace rcp {
         if (!m_transporter.isConnected()) {
             return;
         }
+		
+		// protect lists to be used from multiple threads
+		m_parameterManager->lock();
 
         // send updates
         for (auto& p : m_parameterManager->dirtyParameter) {
@@ -77,6 +80,7 @@ namespace rcp {
         }
         m_parameterManager->dirtyParameter.clear();
 
+		m_parameterManager->unlock();
     }
 
     // interface ClientTransporterListener
