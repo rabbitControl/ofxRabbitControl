@@ -210,7 +210,7 @@ void ofxRabbitControlServer::paramBoolChanged(bool & value)
     if (param) {
         param->setValue(value);
         // update
-        ParameterServer::update();
+        update();
     }
 }
 
@@ -283,7 +283,7 @@ void ofxRabbitControlServer::paramInt8Changed(char & value)
     {
         param->setValue(value);
         // update
-        ParameterServer::update();
+        update();
     }
 }
 
@@ -354,7 +354,7 @@ void ofxRabbitControlServer::paramInt32Changed(int & value)
     if (param) {
         param->setValue(value);
         // update
-        ParameterServer::update();
+        update();
     }
 }
 
@@ -428,7 +428,7 @@ void ofxRabbitControlServer::paramfloatChanged(float & value)
     if (param) {
         param->setValue(value);
         // update
-        ParameterServer::update();
+        update();
     }
 }
 
@@ -499,7 +499,7 @@ void ofxRabbitControlServer::paramDoubleChanged(double & value)
     if (param) {
         param->setValue(value);
         // update
-        ParameterServer::update();
+        update();
     }
 }
 
@@ -569,7 +569,7 @@ void ofxRabbitControlServer::paramStringChanged(std::string & value)
     if (param) {
         param->setValue(value);
         // update
-        ParameterServer::update();
+        update();
     }
 }
 
@@ -652,7 +652,7 @@ void ofxRabbitControlServer::paramColorChanged(ofColor & value)
         uint32_t cv = r + (g << 8) + (b << 16) + (a << 24);
         param->setValue(rcp::Color(cv));
         // update
-        ParameterServer::update();
+        update();
     }
 }
 
@@ -737,6 +737,6 @@ void ofxRabbitControlServer::paramFloatColorChanged(ofFloatColor & value)
         uint32_t cv = r + (g << 8) + (b << 16) + (a << 24);
         param->setValue(rcp::Color(cv));
         // update
-        ParameterServer::update();
+        update();
     }
 }

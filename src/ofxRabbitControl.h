@@ -45,7 +45,8 @@ class ofxRabbitControlServer : public rcp::ParameterServer
 {
 public:
     ofxRabbitControlServer() {}
-
+	
+public:
     rcp::GroupParameterPtr expose(ofParameterGroup& group, const rcp::GroupParameterPtr& rabbitgroup = rcp::GroupParameterPtr());
     void remove(ofParameterGroup& group);
 
